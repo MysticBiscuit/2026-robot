@@ -4,12 +4,16 @@
 
 package frc.robot;
 
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Coms;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -23,6 +27,13 @@ public class Robot extends TimedRobot {
   private final Timer m_systemTimer = new Timer();
 
   private RobotContainer m_robotContainer;
+  private XboxController m_controller = new XboxController(Constants.OIConstants.kDriverControllerPort);
+  private SparkMax m_armExtender = new SparkMax(Constants.DriveConstants.kIntakeExtenderCanId, MotorType.kBrushless);
+  private SparkMax m_intakeMotor = new SparkMax(Constants.DriveConstants.kIntakeMechanismCanId, MotorType.kBrushless);
+  private SparkMax m_shooter = new SparkMax(Constants.DriveConstants.kShooterCanId, MotorType.kBrushless);
+  private SparkMax m_climber = new SparkMax(Constants.DriveConstants.kClimberCanId, MotorType.kBrushless);
+
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -97,7 +108,28 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+    if (m_controller.getLeftTriggerAxis() >= 0.5) {
+      m_armExtender.set(0.2);
+    } else if (m_controller.getRightTriggerAxis() >= 0.5) {
+      m_armExtender.set(-0.2);
+    }
+
+    if (m_controller.getLeftBumperButton()) {
+      m_intakeMotor.set(0.25);
+    }
+
+    if (m_controller.getRightBumperButton()) {
+      m_shooter.set(0.25);
+    }
+
+    if (m_controller.getYButton()) {
+      m_climber.set(0.1);
+    } else if (m_controller.getXButton()) {
+      m_climber.set(-0.1);
+    }
+  }
 
   @Override
   public void testInit() {
