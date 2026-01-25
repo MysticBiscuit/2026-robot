@@ -55,12 +55,20 @@ public final class Constants {
     public static final int kRearLeftTurningCanId = 4;
     public static final int kFrontRightTurningCanId = 6;
     public static final int kRearRightTurningCanId = 8;
-    public static final int kGyroID = 0;
-
+    
     public static final int kIntakeExtenderCanId = 9;
     public static final int kIntakeMechanismCanId = 10;
     public static final int kShooterCanId = 11;
     public static final int kClimberCanId = 12;
+    public static final int kSecondElevatorCanId = 13;
+
+    public static final int kGyroID = 0;
+
+    public static final int dLowerLimitSwitchPort = 0;
+    public static final int dUpperLimitSwitchPort = 1;
+    public static final int dTopElevatorLimitSwitchPort = 2;
+    public static final int dBottomElevatorLimitSwitchPort = 3;
+
 
     public static final boolean kGyroReversed = false;
   }
