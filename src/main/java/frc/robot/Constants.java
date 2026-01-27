@@ -56,11 +56,15 @@ public final class Constants {
     public static final int kFrontRightTurningCanId = 6;
     public static final int kRearRightTurningCanId = 8;
     
-    public static final int kIntakeExtenderCanId = 9;
-    public static final int kIntakeMechanismCanId = 10;
-    public static final int kShooterCanId = 11;
-    public static final int kClimberCanId = 12;
-    public static final int kSecondElevatorCanId = 13;
+    public static final int kIntakeExtenderOneCanId = 9;
+    public static final int kIntakeExtenderTwoCanId = 10;
+    public static final int kIntakeMechanismCanId = 11;
+    public static final int kBallConductorOneCanId = 12;
+    public static final int kBallConductorTwoCanId = 13;
+    public static final int kShooterOneCanId = 14;
+    public static final int kShooterTwoCanId = 15;
+    public static final int kClimberOneCanId = 16;
+    public static final int kClimberTwoCanId = 17;
 
     public static final int kGyroID = 0;
 

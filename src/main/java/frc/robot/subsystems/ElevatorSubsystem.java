@@ -15,8 +15,8 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 
 public class ElevatorSubsystem extends SubsystemBase{
-   private final SparkMax m_climber;
-   private final SparkMax m_elevatorMotorTwo;
+   private final SparkMax m_climberOne;
+   private final SparkMax m_climberTwo;
    
    private final DigitalInput m_elevatorTopLimit;
    private final DigitalInput m_elevatorBottomLimit;
@@ -25,8 +25,8 @@ public class ElevatorSubsystem extends SubsystemBase{
    private boolean m_autoClimbRequested = false;
 
    public ElevatorSubsystem() {
-    m_climber = new SparkMax(Constants.DriveConstants.kClimberCanId, MotorType.kBrushless);
-    m_elevatorMotorTwo = new SparkMax(Constants.DriveConstants.kSecondElevatorCanId, MotorType.kBrushless);
+    m_climberOne = new SparkMax(Constants.DriveConstants.kClimberOneCanId, MotorType.kBrushless);
+    m_climberTwo = new SparkMax(Constants.DriveConstants.kClimberTwoCanId, MotorType.kBrushless);
 
     m_elevatorTopLimit = new DigitalInput(Constants.DriveConstants.dTopElevatorLimitSwitchPort);
     m_elevatorBottomLimit = new DigitalInput(Constants.DriveConstants.dBottomElevatorLimitSwitchPort);
@@ -36,5 +36,23 @@ public class ElevatorSubsystem extends SubsystemBase{
    public void periodic() {
     if (!DriverStation.isAutonomous()){
         fullClimbCommand(m_fullClimbRequested);
+    }
+    
+    if (DriverStation.isAutonomous()) {
+         autoClimbCommand(m_autoClimbRequested);
+    }
    }
-}}
+   
+   private void fullClimbCommand(boolean fullClimbRequested) {
+
+   }
+
+   private void autoClimbCommand(boolean autoClimbRequested) {
+
+   }
+
+public void updateWithControls(boolean fullClimbRequested, boolean autoClimbRequested) {
+   m_fullClimbRequested = fullClimbRequested;
+   m_autoClimbRequested = autoClimbRequested;
+}
+}
