@@ -7,13 +7,15 @@ package frc.robot;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Coms;
-
+import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.subsystems.LimelightHelpers;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -27,6 +29,7 @@ public class Robot extends TimedRobot {
   private final Timer m_systemTimer = new Timer();
 
   private RobotContainer m_robotContainer;
+  private DriveSubsystem m_driveSubsystem;
   private XboxController m_controller = new XboxController(Constants.OIConstants.kDriverControllerPort);
   private SparkMax m_climber = new SparkMax(Constants.DriveConstants.kClimberOneCanId, MotorType.kBrushless);
 
@@ -58,6 +61,13 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    double omegaRps = Units.degreesToRotations(m_driveSubsystem.getTurnRate());
+    var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+
+    if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
+      m_driveSubsystem.resetOdometry(llMeasurement.pose);
+    }
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
