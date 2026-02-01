@@ -28,10 +28,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private XboxController m_controller = new XboxController(Constants.OIConstants.kDriverControllerPort);
-  private SparkMax m_armExtender = new SparkMax(Constants.DriveConstants.kIntakeExtenderCanId, MotorType.kBrushless);
-  private SparkMax m_intakeMotor = new SparkMax(Constants.DriveConstants.kIntakeMechanismCanId, MotorType.kBrushless);
-  private SparkMax m_shooter = new SparkMax(Constants.DriveConstants.kShooterCanId, MotorType.kBrushless);
-  private SparkMax m_climber = new SparkMax(Constants.DriveConstants.kClimberCanId, MotorType.kBrushless);
+  private SparkMax m_climber = new SparkMax(Constants.DriveConstants.kClimberOneCanId, MotorType.kBrushless);
 
 
 
@@ -109,20 +106,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
-    if (m_controller.getLeftTriggerAxis() >= 0.5) {
-      m_armExtender.set(0.2);
-    } else if (m_controller.getRightTriggerAxis() >= 0.5) {
-      m_armExtender.set(-0.2);
-    }
-
-    if (m_controller.getLeftBumperButton()) {
-      m_intakeMotor.set(0.25);
-    }
-
-    if (m_controller.getRightBumperButton()) {
-      m_shooter.set(0.25);
-    }
 
     if (m_controller.getYButton()) {
       m_climber.set(0.1);
