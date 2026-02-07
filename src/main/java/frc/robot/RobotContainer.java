@@ -32,6 +32,7 @@ import java.util.List;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
