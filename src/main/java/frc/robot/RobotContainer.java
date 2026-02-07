@@ -214,4 +214,12 @@ public class RobotContainer {
 
         return autoCommand;
   }
+
+  private Command generateTrajectoryCommand(Pose2d start, Pose2d end, List<Translation2d> waypoints, TrajectoryConfig config) {
+    currentTrajectory = TrajectoryGenerator.generateTrajectory(
+        start,
+        waypoints,
+        end,
+        config
+    );
 }
