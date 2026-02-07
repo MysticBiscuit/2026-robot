@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -28,7 +29,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private XboxController m_controller = new XboxController(Constants.OIConstants.kDriverControllerPort);
-  private SparkMax m_climber = new SparkMax(Constants.DriveConstants.kClimberOneCanId, MotorType.kBrushless);
+  private SparkFlex m_climber = new SparkFlex(Constants.DriveConstants.kClimberOneCanId, MotorType.kBrushless);
 
 
 
