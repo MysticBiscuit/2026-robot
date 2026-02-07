@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -16,8 +16,8 @@ import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.Servo;
 
 public class ElevatorSubsystem extends SubsystemBase{
-   private final SparkMax m_climberOne;
-   private final SparkMax m_climberTwo;
+   private final SparkFlex m_climberOne;
+   private final SparkFlex m_climberTwo;
    
    private final DigitalInput m_elevatorTopLimit;
    private final DigitalInput m_elevatorBottomLimit;
@@ -30,8 +30,8 @@ public class ElevatorSubsystem extends SubsystemBase{
    private boolean m_elevatorSlideInRequested = false;
 
    public ElevatorSubsystem() {
-    m_climberOne = new SparkMax(Constants.DriveConstants.kClimberOneCanId, MotorType.kBrushless);
-    m_climberTwo = new SparkMax(Constants.DriveConstants.kClimberTwoCanId, MotorType.kBrushless);
+    m_climberOne = new SparkFlex(Constants.DriveConstants.kClimberOneCanId, MotorType.kBrushless);
+    m_climberTwo = new SparkFlex(Constants.DriveConstants.kClimberTwoCanId, MotorType.kBrushless);
 
     m_elevatorTopLimit = new DigitalInput(Constants.DriveConstants.dTopElevatorLimitSwitchPort);
     m_elevatorBottomLimit = new DigitalInput(Constants.DriveConstants.dBottomElevatorLimitSwitchPort);
