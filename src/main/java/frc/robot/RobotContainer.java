@@ -47,6 +47,9 @@ public class RobotContainer {
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
+  // Trajectory generation initializing variable
+  public Trajectory currentTrajectory;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -222,4 +225,32 @@ public class RobotContainer {
         end,
         config
     );
+
+    var thetaController = new ProfiledPIDController(
+        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    Command swerveCommand = new SwerveControllerCommand(
+        currentTrajectory,
+        m_robotDrive.m_poseEstimator::getEstimatedPose,
+        DriveConstants.kDriveKinematics,
+        new PIDController(AutoConstants.kPXController, 0, 0),
+        new PIDController(AutoConstants.kPYController, 0, 0),
+        thetaController,
+        m_robotDrive::setModuleStates,
+        m_robotDrive) {
+            
+        @Override
+        public void execute() {
+            super.execute();
+        }
+    };
+
+    return swerveCommand
+    .andThen(
+      Commands.runOnce(
+        () -> m_robotDrive.drive(0, 0, 0, false)
+      )
+    );
+  }
 }
