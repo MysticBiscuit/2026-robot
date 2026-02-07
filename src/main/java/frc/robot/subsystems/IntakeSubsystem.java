@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -13,13 +13,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase{
-    private SparkMax m_armExtenderOne;
-    private SparkMax m_armExtenderTwo;
-    private SparkMax m_intakeMotor;
-    private SparkMax m_rollerOne;
-    private SparkMax m_rollerTwo;
-    private SparkMax m_shooterOne;
-    private SparkMax m_shooterTwo;
+    private SparkFlex m_armExtenderOne;
+    private SparkFlex m_armExtenderTwo;
+    private SparkFlex m_intakeMotor;
+    private SparkFlex m_rollerOne;
+    private SparkFlex m_rollerTwo;
+    private SparkFlex m_shooterOne;
+    private SparkFlex m_shooterTwo;
 
     private DigitalInput m_lowerLimit;
     private DigitalInput m_upperLimit;
