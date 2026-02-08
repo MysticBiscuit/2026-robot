@@ -33,13 +33,13 @@ public class IntakeSubsystem extends SubsystemBase{
     
 
     public IntakeSubsystem(){
-        m_armExtenderOne = new SparkFlex(Constants.DriveConstants.kIntakeExtenderOneCanId, MotorType.kBrushless);
-        m_armExtenderTwo = new SparkFlex(Constants.DriveConstants.kIntakeExtenderTwoCanId, MotorType.kBrushless);
-        m_intakeMotor = new SparkFlex(Constants.DriveConstants.kIntakeMechanismCanId, MotorType.kBrushless);
-        m_rollerOne = new SparkFlex(Constants.DriveConstants.kBallConductorOneCanId, MotorType.kBrushless);
-        m_rollerTwo = new SparkFlex(Constants.DriveConstants.kBallConductorTwoCanId, MotorType.kBrushless);
-        m_shooterOne = new SparkFlex(Constants.DriveConstants.kShooterOneCanId, MotorType.kBrushless);
-        m_shooterTwo = new SparkFlex(Constants.DriveConstants.kShooterTwoCanId, MotorType.kBrushless);
+        m_armExtenderOne = new SparkMax(Constants.DriveConstants.kIntakeExtenderOneCanId, MotorType.kBrushless);
+        m_armExtenderTwo = new SparkMax(Constants.DriveConstants.kIntakeExtenderTwoCanId, MotorType.kBrushless);
+        m_intakeMotor = new SparkMax(Constants.DriveConstants.kIntakeMechanismCanId, MotorType.kBrushless);
+        m_rollerOne = new SparkMax(Constants.DriveConstants.kBallConductorOneCanId, MotorType.kBrushless);
+        m_rollerTwo = new SparkMax(Constants.DriveConstants.kBallConductorTwoCanId, MotorType.kBrushless);
+        m_shooterOne = new SparkMax(Constants.DriveConstants.kShooterOneCanId, MotorType.kBrushless);
+        m_shooterTwo = new SparkMax(Constants.DriveConstants.kShooterTwoCanId, MotorType.kBrushless);
         
         m_lowerLimit = new DigitalInput(Constants.DriveConstants.dLowerLimitSwitchPort);
         m_upperLimit = new DigitalInput(Constants.DriveConstants.dUpperLimitSwitchPort);
