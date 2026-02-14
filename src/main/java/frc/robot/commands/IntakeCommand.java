@@ -14,6 +14,8 @@ public class IntakeCommand extends Command{
         addRequirements(intake);
     }
 
+    
+    
     @Override
     public void execute() {
         m_intake.updateWithControls(
@@ -23,6 +25,7 @@ public class IntakeCommand extends Command{
 
         m_intake.shootingTime(m_Controller.getRightBumperButton());
         m_intake.intakeTime(m_Controller.getLeftBumperButton());
-        m_intake.hoodAdjustmentCoverIt();
+        m_intake.hoodAdjustmentCoverIt(m_Controller.);
+        m_intake.hoodAdjustmentOpenIt();
     }
 }
