@@ -23,5 +23,6 @@ public class IntakeCommand extends Command{
 
         m_intake.shootingTime(m_Controller.getRightBumperButton());
         m_intake.intakeTime(m_Controller.getLeftBumperButton());
+        m_intake.hoodAdjustmentCoverIt();
     }
 }
