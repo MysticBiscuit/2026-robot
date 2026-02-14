@@ -232,7 +232,7 @@ public class RobotContainer {
 
     Command swerveCommand = new SwerveControllerCommand(
         currentTrajectory,
-        m_robotDrive.m_poseEstimator::getEstimatedPose,
+        m_robotDrive::getPose,
         DriveConstants.kDriveKinematics,
         new PIDController(AutoConstants.kPXController, 0, 0),
         new PIDController(AutoConstants.kPYController, 0, 0),
