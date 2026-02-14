@@ -15,6 +15,7 @@ import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase{
     private SparkMax m_armExtenderOne;
+    private SparkMax m_armExtenderTwo;
     private SparkMax m_intakeMotor;
     private SparkMax m_rollerOne;
     private SparkMax m_shooterOne;
@@ -34,6 +35,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public IntakeSubsystem(){
         m_armExtenderOne = new SparkMax(Constants.DriveConstants.kIntakeExtenderOneCanId, MotorType.kBrushless);
+        m_armExtenderTwo = new SparkMax(Constants.DriveConstants.kIntakeExtenderTwoCanId, MotorType.kBrushless);
         m_intakeMotor = new SparkMax(Constants.DriveConstants.kIntakeMechanismCanId, MotorType.kBrushless);
         m_rollerOne = new SparkMax(Constants.DriveConstants.kBallConductorOneCanId, MotorType.kBrushless);
         m_shooterOne = new SparkMax(Constants.DriveConstants.kShooterOneCanId, MotorType.kBrushless);
@@ -55,12 +57,15 @@ public class IntakeSubsystem extends SubsystemBase{
     private void extendBox(boolean boxExtendRequested, boolean boxRetractRequested, double armDegrees){
         if (boxExtendRequested && armDegrees < 90 && m_lowerLimit.get()) {
             m_armExtenderOne.set(0.2);
+            m_armExtenderTwo.set(-0.2);
             
         } else if(m_boxRetractRequested && armDegrees > 0.8 && m_upperLimit.get()) {
             m_armExtenderOne.set(-0.2);
+            m_armExtenderTwo.set(.2);
             
         } else {
             m_armExtenderOne.set(0);
+            m_armExtenderTwo.set(0);
             boxExtendRequested = false;
             boxRetractRequested = false;
         }
