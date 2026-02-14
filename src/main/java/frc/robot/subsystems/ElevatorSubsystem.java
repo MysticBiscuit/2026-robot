@@ -16,7 +16,7 @@ import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.Servo;
 
 public class ElevatorSubsystem extends SubsystemBase{
-   private final SparkMax m_climberOne;
+   private final SparkMax m_climber;
    
    private final DigitalInput m_elevatorTopLimit;
    private final DigitalInput m_elevatorBottomLimit;
@@ -29,7 +29,7 @@ public class ElevatorSubsystem extends SubsystemBase{
    private boolean m_elevatorSlideInRequested = false;
 
    public ElevatorSubsystem() {
-    m_climberOne = new SparkMax(Constants.DriveConstants.kClimberOneCanId, MotorType.kBrushless);
+    m_climber = new SparkMax(Constants.DriveConstants.kClimberCanId, MotorType.kBrushless);
 
     m_elevatorTopLimit = new DigitalInput(Constants.DriveConstants.dTopElevatorLimitSwitchPort);
     m_elevatorBottomLimit = new DigitalInput(Constants.DriveConstants.dBottomElevatorLimitSwitchPort);
