@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.Servo;
 
 public class ElevatorSubsystem extends SubsystemBase{
    private final SparkMax m_climberOne;
-   private final SparkMax m_climberTwo;
    
    private final DigitalInput m_elevatorTopLimit;
    private final DigitalInput m_elevatorBottomLimit;
@@ -31,7 +30,6 @@ public class ElevatorSubsystem extends SubsystemBase{
 
    public ElevatorSubsystem() {
     m_climberOne = new SparkMax(Constants.DriveConstants.kClimberOneCanId, MotorType.kBrushless);
-    m_climberTwo = new SparkMax(Constants.DriveConstants.kClimberTwoCanId, MotorType.kBrushless);
 
     m_elevatorTopLimit = new DigitalInput(Constants.DriveConstants.dTopElevatorLimitSwitchPort);
     m_elevatorBottomLimit = new DigitalInput(Constants.DriveConstants.dBottomElevatorLimitSwitchPort);
