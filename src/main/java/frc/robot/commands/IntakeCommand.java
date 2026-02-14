@@ -21,11 +21,13 @@ public class IntakeCommand extends Command{
         m_intake.updateWithControls(
             m_Controller.getRightTriggerAxis() > 0.8, 
             m_Controller.getLeftTriggerAxis() > 0.8,
-            m_Controller.getXButton());
+            m_Controller.getXButton(),
+            m_Controller.getLeftStickButton(),
+            m_Controller.getRightStickButton());
 
         m_intake.shootingTime(m_Controller.getRightBumperButton());
         m_intake.intakeTime(m_Controller.getLeftBumperButton());
-        m_intake.hoodAdjustmentCoverIt(m_Controller.);
-        m_intake.hoodAdjustmentOpenIt();
+       
+        m_intake.setHoodStateManual(m_Controller.getPOV());
     }
 }

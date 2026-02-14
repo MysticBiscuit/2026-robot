@@ -30,6 +30,11 @@ public class IntakeSubsystem extends SubsystemBase{
     private SparkAbsoluteEncoder armExtenderPosition = m_armExtenderOne.getAbsoluteEncoder();
     private double armDegrees = armExtenderPosition.getPosition();
     private boolean m_armKillSwitch = false;
+    private boolean m_suckIt = false;
+    private boolean m_shootIt = false;
+    private int m_povDir;
+    private boolean m_startScoringMode = false;
+    private boolean m_endScoringMode = false;
     
 
     public IntakeSubsystem(){
@@ -49,6 +54,10 @@ public class IntakeSubsystem extends SubsystemBase{
         if (!DriverStation.isAutonomous()){
             extendBox(m_boxExtendRequested, m_boxRetractRequested, armDegrees);
             killSwitchOne(m_armKillSwitch, m_boxExtendRequested, m_boxRetractRequested);
+            intakeTime(m_suckIt);
+            shootingTime(m_shootIt);
+            setHoodStateManual(m_povDir);
+
         }
     }
 
@@ -94,26 +103,22 @@ public class IntakeSubsystem extends SubsystemBase{
         }
     }
 
-    public void hoodAdjustmentCoverIt(boolean decreaseAngle) {
-        if (decreaseAngle) {
+    public void setHoodStateManual(int povDir) {
+        if (povDir == 0) {
             m_hood.set(0.1);
-        } else {
-            m_hood.set(0);
-        }
-    }
-
-    public void hoodAdjustmentOpenIt(boolean increaseAngle) {
-        if (increaseAngle) {
+        } else if (povDir == 180) {
             m_hood.set(-0.1);
         } else {
             m_hood.set(0);
         }
     }
 
-    public void updateWithControls(boolean boxExtendRequested, boolean boxRetractRequested, boolean armKillSwitch) {
+    public void updateWithControls(boolean boxExtendRequested, boolean boxRetractRequested, boolean armKillSwitch, boolean startScoringMode, boolean endScoringMode) {
         m_boxExtendRequested = boxExtendRequested;
         m_boxExtendRequested = boxRetractRequested;
         m_armKillSwitch = armKillSwitch;
+        m_startScoringMode = startScoringMode;
+        m_endScoringMode = endScoringMode;
     }
 
 }
