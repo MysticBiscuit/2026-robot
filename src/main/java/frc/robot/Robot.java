@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private XboxController m_controller = new XboxController(Constants.OIConstants.kDriverControllerPort);
-  private SparkMax m_climber = new SparkMax(Constants.DriveConstants.kClimberOneCanId, MotorType.kBrushless);
+  private SparkMax m_climber = new SparkMax(Constants.DriveConstants.kClimberCanId, MotorType.kBrushless);
 
 
 
