@@ -29,6 +29,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ElevatorCommand;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -159,11 +161,11 @@ TrajectoryConfig config = new TrajectoryConfig(
         return autoCommand;
   }
 
- /** 
+  
   private void configureDefaultCommands() {
 
     
     m_intake.setDefaultCommand(new IntakeCommand(m_intake, m_driverController));
     m_elevator.setDefaultCommand(new ElevatorCommand(m_elevator, m_driverController));
-  } */
+  } 
 }
