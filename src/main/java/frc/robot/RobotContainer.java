@@ -21,6 +21,8 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.Coms;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -31,6 +33,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -45,6 +49,8 @@ import com.revrobotics.spark.SparkFlex;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final IntakeSubsystem m_intake = new IntakeSubsystem();
+  private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
