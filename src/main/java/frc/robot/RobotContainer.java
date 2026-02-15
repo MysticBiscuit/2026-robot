@@ -61,6 +61,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    configureDefaultCommands();
 
     // Configure default commands
     m_robotDrive.setDefaultCommand(
@@ -170,7 +171,6 @@ TrajectoryConfig config = new TrajectoryConfig(
   
   private void configureDefaultCommands() {
 
-    
     m_intake.setDefaultCommand(new IntakeCommand(m_intake, m_driverController));
     m_elevator.setDefaultCommand(new ElevatorCommand(m_elevator, m_driverController));
   } 
