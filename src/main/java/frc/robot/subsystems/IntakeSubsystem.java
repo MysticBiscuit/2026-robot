@@ -33,7 +33,7 @@ public class IntakeSubsystem extends SubsystemBase{
     private boolean m_suckIt = false;
     private boolean m_shootIt = false;
     private int m_povDir;
-    private boolean m_startScoringMode = false;
+    private boolean m_scoringModeActive = false;
     private boolean m_endScoringMode = false;
     
 
@@ -57,7 +57,12 @@ public class IntakeSubsystem extends SubsystemBase{
             intakeTime(m_suckIt);
             shootingTime(m_shootIt);
             setHoodStateManual(m_povDir);
+            endScoringMode(m_endScoringMode, m_scoringModeActive);
 
+        }
+
+        if (!DriverStation.isAutonomous() && m_scoringModeActive) {
+            scoringModeAligner();
         }
     }
 
@@ -113,11 +118,22 @@ public class IntakeSubsystem extends SubsystemBase{
         }
     }
 
-    public void updateWithControls(boolean boxExtendRequested, boolean boxRetractRequested, boolean armKillSwitch, boolean startScoringMode, boolean endScoringMode) {
+    public void scoringModeAligner() {
+
+    }
+
+    public void endScoringMode(boolean endScoringMode, boolean scoringModeActive) {
+        if (endScoringMode) {
+            scoringModeActive = false;
+            endScoringMode = false;
+        }
+    }
+
+    public void updateWithControls(boolean boxExtendRequested, boolean boxRetractRequested, boolean armKillSwitch, boolean scoringModeActive, boolean endScoringMode) {
         m_boxExtendRequested = boxExtendRequested;
         m_boxExtendRequested = boxRetractRequested;
         m_armKillSwitch = armKillSwitch;
-        m_startScoringMode = startScoringMode;
+        m_scoringModeActive = scoringModeActive;
         m_endScoringMode = endScoringMode;
     }
 
