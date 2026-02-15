@@ -158,4 +158,12 @@ TrajectoryConfig config = new TrajectoryConfig(
 
         return autoCommand;
   }
+
+ /** 
+  private void configureDefaultCommands() {
+
+    
+    m_intake.setDefaultCommand(new IntakeCommand(m_intake, m_driverController));
+    m_elevator.setDefaultCommand(new ElevatorCommand(m_elevator, m_driverController));
+  } */
 }
