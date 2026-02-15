@@ -100,8 +100,8 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public void shootingTime(boolean shootIt) {
         if(shootIt) {
-            m_shooterOne.set(0.25);
-            m_shooterTwo.set(0.25);
+            m_shooterOne.set(0.5);
+            m_shooterTwo.set(0.5);
         } else {
             m_shooterOne.set(0);
             m_shooterTwo.set(0);
