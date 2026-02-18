@@ -19,8 +19,12 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.subsystems.Coms;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -43,6 +47,8 @@ import com.revrobotics.spark.SparkFlex;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final IntakeSubsystem m_intake = new IntakeSubsystem();
+  private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -157,5 +163,12 @@ TrajectoryConfig config = new TrajectoryConfig(
     }
 
         return autoCommand;
+  }
+
+  private void configureDefaultCommands() {
+
+
+    m_intake.setDefaultCommand(new IntakeCommand(m_intake, m_driverController));
+    m_elevator.setDefaultCommand(new ElevatorCommand(m_elevator, m_driverController));
   }
 }
