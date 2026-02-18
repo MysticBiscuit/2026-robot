@@ -6,20 +6,20 @@ import frc.robot.subsystems.ElevatorSubsystem;
 
 public class ElevatorCommand extends Command{
     private final ElevatorSubsystem m_elevator;
-    private final XboxController m_Controller;
+    private final XboxController m_controller;
 
     public ElevatorCommand(ElevatorSubsystem elevator, XboxController controller) {
         m_elevator = elevator;
-        m_Controller = controller;
+        m_controller = controller;
         addRequirements(elevator);
     }
-
+    
     @Override
     public void execute() {
         m_elevator.updateWithControls(
-            m_Controller.getYButton(),
-            m_Controller.getBButton(),
-            m_Controller.getAButton()
+            m_controller.getYButton(),
+            m_controller.getBButton(),
+            m_controller.getAButton()
         );
     }
 }

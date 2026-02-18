@@ -34,10 +34,6 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkFlex;
-
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -61,6 +57,8 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Configure default commands
+    m_elevator.setDefaultCommand(new ElevatorCommand(m_elevator, m_driverController));
+    m_intake.setDefaultCommand(new IntakeCommand(m_intake, m_driverController));
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
@@ -82,7 +80,7 @@ public class RobotContainer {
    * passing it to a
    * {@link JoystickButton}.
    */
-  private void configureButtonBindings() {
+   private void configureButtonBindings() {
     new JoystickButton(m_driverController, Button.kR1.value)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
@@ -93,6 +91,7 @@ public class RobotContainer {
             () -> m_robotDrive.zeroHeading(),
             m_robotDrive));
   }
+
 
   private Command getmoveForward(){
 
@@ -165,10 +164,11 @@ TrajectoryConfig config = new TrajectoryConfig(
         return autoCommand;
   }
 
-  private void configureDefaultCommands() {
+  public ElevatorSubsystem getElevator() {
+    return m_elevator;
+  }
 
-
-    m_intake.setDefaultCommand(new IntakeCommand(m_intake, m_driverController));
-    m_elevator.setDefaultCommand(new ElevatorCommand(m_elevator, m_driverController));
+  public IntakeSubsystem getIntake() {
+    return m_intake;
   }
 }

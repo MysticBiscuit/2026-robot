@@ -72,4 +72,8 @@ public void updateWithControls(boolean fullClimbRequested, boolean elevatorSlide
    m_elevatorSlideOutRequested = elevatorSlideOutRequested;
    m_elevatorSlideInRequested = elevatorSlideInRequested;
 }
+
+   public boolean atTarget() {
+      return m_elevatorBottomLimit.get();
+   }
 }

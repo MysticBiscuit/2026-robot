@@ -28,8 +28,8 @@ public class IntakeSubsystem extends SubsystemBase{
     // private final Timer m_systemTimer = new Timer();
     private boolean m_boxExtendRequested = false;
     private boolean m_boxRetractRequested = false;
-    private SparkAbsoluteEncoder armExtenderPosition = m_armExtenderOne.getAbsoluteEncoder();
-    private double armDegrees = armExtenderPosition.getPosition();
+    // private SparkAbsoluteEncoder armExtenderPosition = m_armExtenderOne.getAbsoluteEncoder();
+    //private double armDegrees = armExtenderPosition.getPosition();
     private boolean m_armKillSwitch = false;
     
 
@@ -49,17 +49,21 @@ public class IntakeSubsystem extends SubsystemBase{
     @Override
     public void periodic(){
         if (!DriverStation.isAutonomous()){
-            extendBox(m_boxExtendRequested, m_boxRetractRequested, armDegrees);
+            extendBox(m_boxExtendRequested, m_boxRetractRequested //armDegrees
+            );
             killSwitchOne(m_armKillSwitch, m_boxExtendRequested, m_boxRetractRequested);
         }
     }
 
-    private void extendBox(boolean boxExtendRequested, boolean boxRetractRequested, double armDegrees){
-        if (boxExtendRequested && armDegrees < 90 && m_lowerLimit.get()) {
+    private void extendBox(boolean boxExtendRequested, boolean boxRetractRequested //double armDegrees
+    ){
+        if (boxExtendRequested //&& armDegrees < 90 
+        && m_lowerLimit.get()) {
             m_armExtenderOne.set(0.2);
             m_armExtenderTwo.set(-0.2);
             
-        } else if(m_boxRetractRequested && armDegrees > 0.8 && m_upperLimit.get()) {
+        } else if(m_boxRetractRequested //&& armDegrees > 0.8 
+        && m_upperLimit.get()) {
             m_armExtenderOne.set(-0.2);
             m_armExtenderTwo.set(.2);
             
