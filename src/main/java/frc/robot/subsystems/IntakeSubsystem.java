@@ -55,7 +55,7 @@ public class IntakeSubsystem extends SubsystemBase{
         }
     }
 
-    private void extendBox(boolean boxExtendRequested, boolean boxRetractRequested //double armDegrees
+    /**private void extendBox(boolean boxExtendRequested, boolean boxRetractRequested //double armDegrees
     ){
         if (boxExtendRequested //&& armDegrees < 90 
         && m_lowerLimit.get()) {
@@ -73,18 +73,19 @@ public class IntakeSubsystem extends SubsystemBase{
             boxExtendRequested = false;
             boxRetractRequested = false;
         }
-    }
+    }*/
 
-    public void extendBox(boolean extendBox) {
+    public void boxControls(boolean extendBox, boolean retractBox) {
         if(extendBox) {
             m_armExtenderOne.set(-0.05);
             m_armExtenderTwo.set(0.05);
+        } else if (retractBox) {
+            m_armExtenderOne.set(0.05);
+            m_armExtenderTwo.set(-0.05);
+        } else {
+            m_armExtenderOne.set(0);
+            m_armExtenderTwo.set(0);
         }
-    }
-
-    public void retractBox(boolean retractBox) {
-        m_armExtenderOne.set(0.05);
-        m_armExtenderTwo.set(-0.05);
     }
 
     private void killSwitchOne(boolean armKillSwitch, boolean boxExtendRequested, boolean boxRetractRequested){
