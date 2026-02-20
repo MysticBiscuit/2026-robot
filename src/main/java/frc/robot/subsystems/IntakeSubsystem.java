@@ -81,8 +81,9 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public void retractBox(boolean retractBox) {
+        if(retractBox) {
         m_armExtenderOne.set(0.05);
-        m_armExtenderTwo.set(-0.05);
+        m_armExtenderTwo.set(-0.05);}
     }
 
     private void killSwitchOne(boolean armKillSwitch, boolean boxExtendRequested, boolean boxRetractRequested){
