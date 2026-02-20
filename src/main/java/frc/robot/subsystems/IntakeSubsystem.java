@@ -73,7 +73,7 @@ public class IntakeSubsystem extends SubsystemBase{
             boxExtendRequested = false;
             boxRetractRequested = false;
         }
-    }*/
+    }
 
     public void extendBox(boolean extendBox) {
         if(extendBox) {

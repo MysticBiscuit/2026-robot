@@ -59,7 +59,6 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-    configureDefaultCommands();
 
     // Configure default commands
     m_elevator.setDefaultCommand(new ElevatorCommand(m_elevator, m_driverController));
