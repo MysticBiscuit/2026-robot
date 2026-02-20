@@ -49,23 +49,23 @@ public class IntakeSubsystem extends SubsystemBase{
     @Override
     public void periodic(){
         if (!DriverStation.isAutonomous()){
-            extendBox(m_boxExtendRequested, m_boxRetractRequested //** , armDegrees*/
+            extendBox(m_boxExtendRequested, m_boxRetractRequested //armDegrees
             );
             killSwitchOne(m_armKillSwitch, m_boxExtendRequested, m_boxRetractRequested);
         }
     }
 
-    private void extendBox(boolean boxExtendRequested, boolean boxRetractRequested //**, double armDegrees*/
+    private void extendBox(boolean boxExtendRequested, boolean boxRetractRequested //double armDegrees
     ){
-        if (boxExtendRequested && //** armDegrees < 90 && */ 
-        m_lowerLimit.get()) {
-            m_armExtenderOne.set(0.2);
-            m_armExtenderTwo.set(-0.2);
+        if (boxExtendRequested //&& armDegrees < 90 
+        && m_lowerLimit.get()) {
+            m_armExtenderOne.set(-0.05);
+            m_armExtenderTwo.set(0.05);
             
-        } else if(m_boxRetractRequested && //** armDegrees > 0.8 && */
-        m_upperLimit.get()) {
-            m_armExtenderOne.set(-0.2);
-            m_armExtenderTwo.set(.2);
+        } else if(m_boxRetractRequested //&& armDegrees > 0.8 
+        && m_upperLimit.get()) {
+            m_armExtenderOne.set(0.05);
+            m_armExtenderTwo.set(-0.05);
             
         } else {
             m_armExtenderOne.set(0);
@@ -97,7 +97,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public void intakeTime(boolean suckIt) {
         if(suckIt) {
-            m_intakeMotor.set(0.25);
+            m_intakeMotor.set(-0.25);
             m_rollerOne.set(0.1);
         }else {
             m_intakeMotor.set(0);
