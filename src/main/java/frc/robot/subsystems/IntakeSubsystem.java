@@ -58,14 +58,14 @@ public class IntakeSubsystem extends SubsystemBase{
     private void extendBox(boolean boxExtendRequested, boolean boxRetractRequested //**, double armDegrees*/
     ){
         if (boxExtendRequested && //** armDegrees < 90 && */ 
-        m_lowerLimit.get()) {
-            m_armExtenderOne.set(0.2);
-            m_armExtenderTwo.set(-0.2);
+        !m_lowerLimit.get()) {
+            m_armExtenderOne.set(-0.2);
+            m_armExtenderTwo.set(0.2);
             
         } else if(m_boxRetractRequested && //** armDegrees > 0.8 && */
         m_upperLimit.get()) {
-            m_armExtenderOne.set(-0.2);
-            m_armExtenderTwo.set(.2);
+            m_armExtenderOne.set(0.2);
+            m_armExtenderTwo.set(-0.2);
             
         } else {
             m_armExtenderOne.set(0);
