@@ -59,13 +59,13 @@ public class IntakeSubsystem extends SubsystemBase{
     ){
         if (boxExtendRequested //&& armDegrees < 90 
         && m_lowerLimit.get()) {
-            m_armExtenderOne.set(0.05);
-            m_armExtenderTwo.set(-0.05);
+            m_armExtenderOne.set(-0.05);
+            m_armExtenderTwo.set(0.05);
             
         } else if(m_boxRetractRequested //&& armDegrees > 0.8 
         && m_upperLimit.get()) {
-            m_armExtenderOne.set(-0.05);
-            m_armExtenderTwo.set(.05);
+            m_armExtenderOne.set(0.05);
+            m_armExtenderTwo.set(-0.05);
             
         } else {
             m_armExtenderOne.set(0);
