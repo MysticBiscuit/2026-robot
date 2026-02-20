@@ -50,11 +50,92 @@ public class ElevatorSubsystem extends SubsystemBase{
    }
    
    private void fullClimbCommand(boolean fullClimbRequested) {
-
+      if (fullClimbRequested) {
+      climbPartOne()
+      .andThen(
+         climbPartTwo()
+      ).andThen(
+         climbPartThree(m_fullClimbRequested)
+      );
+      } else {
+         m_climber.set(0);
+      }
    }
 
    private void autoClimbCommand(boolean autoClimbRequested) {
+      if (autoClimbRequested) {
+         climbPartThree(m_fullClimbRequested);
+      }
+   }
 
+   private Command climbPartOne() {
+      return new Command() {
+         
+         @Override
+         public boolean isFinished() {
+            return rungOneOrThreeReached();
+         }
+
+         @Override
+         public void initialize() {}
+
+         @Override
+         public void execute() {
+            m_climber.set(0.25);
+         }
+
+         @Override
+         public void end(boolean interrupted) {
+            m_climber.set(0);
+         }
+      };
+   }
+
+   private Command climbPartTwo() {
+      return new Command() {
+         
+         @Override
+         public boolean isFinished() {
+            return rungTwoReached();
+         }
+
+         @Override
+         public void initialize() {}
+
+         @Override
+         public void execute() {
+            m_climber.set(-0.25);
+         }
+
+         @Override
+         public void end(boolean interrupted) {
+            m_climber.set(0);
+         }
+      };
+   }
+
+   private Command climbPartThree(boolean fullClimbRequested) {
+      return new Command() {
+         
+         @Override
+         public boolean isFinished() {
+            return rungOneOrThreeReached();
+         }
+
+         @Override
+         public void initialize() {}
+
+         @Override
+         public void execute() {
+            m_climber.set(0.25);
+         }
+
+         @Override
+         public void end(boolean interrupted) {
+            m_climber.set(0);
+            m_fullClimbRequested = false;
+         }
+      };
    }
 
    private void elevatorSlideCommand(boolean elevatorSlideOutRequested, boolean elevatorSlideInRequested) {
@@ -71,5 +152,13 @@ public void updateWithControls(boolean fullClimbRequested, boolean elevatorSlide
    m_fullClimbRequested = fullClimbRequested;
    m_elevatorSlideOutRequested = elevatorSlideOutRequested;
    m_elevatorSlideInRequested = elevatorSlideInRequested;
+}
+
+public boolean rungOneOrThreeReached() {
+   return !m_elevatorTopLimit.get();
+}
+
+public boolean rungTwoReached() {
+   return !m_elevatorBottomLimit.get();
 }
 }
