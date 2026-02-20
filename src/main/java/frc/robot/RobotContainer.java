@@ -33,6 +33,10 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ElevatorCommand;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -55,6 +59,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    configureDefaultCommands();
 
     // Configure default commands
     m_elevator.setDefaultCommand(new ElevatorCommand(m_elevator, m_driverController));

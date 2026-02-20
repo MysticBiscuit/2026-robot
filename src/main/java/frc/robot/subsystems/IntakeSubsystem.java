@@ -1,8 +1,8 @@
 package frc.robot.subsystems;
 
 import com.fasterxml.jackson.databind.ser.std.InetSocketAddressSerializer;
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
+// import com.revrobotics.AbsoluteEncoder;
+// import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -28,7 +28,7 @@ public class IntakeSubsystem extends SubsystemBase{
     // private final Timer m_systemTimer = new Timer();
     private boolean m_boxExtendRequested = false;
     private boolean m_boxRetractRequested = false;
-    // private SparkAbsoluteEncoder armExtenderPosition = m_armExtenderOne.getAbsoluteEncoder();
+    //private SparkAbsoluteEncoder armExtenderPosition = m_armExtenderOne.getAbsoluteEncoder();
     //private double armDegrees = armExtenderPosition.getPosition();
     private boolean m_armKillSwitch = false;
     
@@ -73,6 +73,18 @@ public class IntakeSubsystem extends SubsystemBase{
             boxExtendRequested = false;
             boxRetractRequested = false;
         }
+    }*/
+
+    public void extendBox(boolean extendBox) {
+        if(extendBox) {
+            m_armExtenderOne.set(-0.05);
+            m_armExtenderTwo.set(0.05);
+        }
+    }
+
+    public void retractBox(boolean retractBox) {
+        m_armExtenderOne.set(0.05);
+        m_armExtenderTwo.set(-0.05);
     }
 
     private void killSwitchOne(boolean armKillSwitch, boolean boxExtendRequested, boolean boxRetractRequested){
@@ -119,9 +131,7 @@ public class IntakeSubsystem extends SubsystemBase{
         }
     }
 
-    public void updateWithControls(boolean boxExtendRequested, boolean boxRetractRequested, boolean armKillSwitch) {
-        m_boxExtendRequested = boxExtendRequested;
-        m_boxExtendRequested = boxRetractRequested;
+    public void updateWithControls(boolean armKillSwitch) {
         m_armKillSwitch = armKillSwitch;
     }
 
