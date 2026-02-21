@@ -49,7 +49,7 @@ public class IntakeSubsystem extends SubsystemBase{
     @Override
     public void periodic(){
         if (!DriverStation.isAutonomous()){
-            killSwitchOne(m_armKillSwitch, m_boxExtendRequested, m_boxRetractRequested);
+            //killSwitchOne(m_armKillSwitch, m_boxExtendRequested, m_boxRetractRequested);
         }
     }
 
@@ -86,13 +86,13 @@ public class IntakeSubsystem extends SubsystemBase{
         }
     }
 
-    private void killSwitchOne(boolean armKillSwitch, boolean boxExtendRequested, boolean boxRetractRequested){
+   /**  private void killSwitchOne(boolean armKillSwitch, boolean boxExtendRequested, boolean boxRetractRequested){
         if(armKillSwitch){
             m_armExtenderOne.set(0);
             boxExtendRequested = false;
             boxRetractRequested = false;
         }
-    }
+    }*/
 
     public void intakeTime(boolean suckIt) {
         if(suckIt) {
