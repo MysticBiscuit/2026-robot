@@ -22,5 +22,10 @@ public class IntakeCommand extends Command {
 
         m_intake.shootingTime(m_Controller.getRightBumperButton());
         m_intake.intakeTime(m_Controller.getLeftBumperButton());
+<<<<<<< Updated upstream
          m_intake.boxControls(m_Controller.getRightTriggerAxis() > 0.8, m_Controller.getLeftTriggerAxis() > 0.8);
+=======
+        m_intake.extendBox(m_Controller.getRightTriggerAxis() > 0.8);
+        m_intake.retractBox(m_Controller.getLeftTriggerAxis() > 0.8);
+>>>>>>> Stashed changes
 }}
