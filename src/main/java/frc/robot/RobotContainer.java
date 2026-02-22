@@ -53,6 +53,9 @@ public class RobotContainer {
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
+  public Trajectory currentTrajectory;
+
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -139,6 +142,27 @@ TrajectoryConfig config = new TrajectoryConfig(
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
   }
 
+
+private Command getShootPosition() {
+
+}
+
+private Command getShoot() {
+
+}
+
+private Command getDriveToLadder() {
+
+  return generateTrajectoryCommand(null, null, null, null);
+}
+
+private Command getClimb() {
+  
+}
+
+
+
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -161,6 +185,14 @@ TrajectoryConfig config = new TrajectoryConfig(
 
     if (choices[0] == "AUTO 1"){
         autoCommand = getmoveForward();
+
+      } else if (choices[0] == "AUTO 2"){
+        autoCommand = getmoveForward()
+        .andThen(getShootPosition())
+        .andThen(getShoot())
+        .andThen(getDriveToLadder())
+        .andThen(getClimb());
+
       } else {
         return Commands.none();
     }

@@ -68,7 +68,7 @@ public class ElevatorSubsystem extends SubsystemBase{
       }
    }
 
-   private Command climbPartOne() {
+   public Command climbPartOne() {
       return new Command() {
          
          @Override
