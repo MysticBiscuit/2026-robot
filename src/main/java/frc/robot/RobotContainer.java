@@ -15,6 +15,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -37,6 +38,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.LimelightHelpers;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -144,7 +146,15 @@ TrajectoryConfig config = new TrajectoryConfig(
 
 
 private Command getShootPosition() {
+  if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+    LimelightHelpers.SetFiducialIDFiltersOverride("", new int[]{25});
+  } else if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+    LimelightHelpers.SetFiducialIDFiltersOverride("", new int[]{9});
+  }
 
+  if (LimelightHelpers.getTV("limelight")) {
+    
+  }
 }
 
 private Command getShoot() {
