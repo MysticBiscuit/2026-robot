@@ -144,7 +144,6 @@ TrajectoryConfig config = new TrajectoryConfig(
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
   }
 
-
 private Command getShootPosition() {
   if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
     LimelightHelpers.SetFiducialIDFiltersOverride("", new int[]{25});
@@ -153,21 +152,40 @@ private Command getShootPosition() {
   }
 
   if (LimelightHelpers.getTV("limelight")) {
-    
+    return new RunCommand(
+      () -> m_robotDrive.drive(
+        LimelightHelpers.getTY("limelight") * -0.1,
+        LimelightHelpers.getTX("limelight") * -0.5,
+        LimelightHelpers.getTX("limelight") * -0.5,
+        false),
+        m_robotDrive
+    )
+    .withTimeout(3)
+    .andThen(
+      Commands.runOnce(
+        () -> m_robotDrive.drive(0, 0, 0, false)
+      )
+    );
+  } else {
+    return Commands.none();
   }
 }
 
 private Command getShoot() {
-
+  return new RunCommand(
+    () -> m_intake.shoot(1)
+  ).withTimeout(3);
 }
 
-private Command getDriveToLadder() {
+private Command getDriveToLadder(TrajectoryConfig config) {
 
-  return generateTrajectoryCommand(null, null, null, null);
+  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(0, 1, new Rotation2d(0)), null, config);
 }
 
 private Command getClimb() {
-  
+  return new RunCommand(
+    () -> m_elevator.climbPartOne()
+  );
 }
 
 
@@ -200,7 +218,7 @@ private Command getClimb() {
         autoCommand = getmoveForward()
         .andThen(getShootPosition())
         .andThen(getShoot())
-        .andThen(getDriveToLadder())
+        .andThen(getDriveToLadder(config))
         .andThen(getClimb());
 
       } else {

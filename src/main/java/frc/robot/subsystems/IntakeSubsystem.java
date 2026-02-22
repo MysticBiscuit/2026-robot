@@ -114,6 +114,11 @@ public class IntakeSubsystem extends SubsystemBase{
         }
     }
 
+    public void shoot(double speed) {
+        m_shooterOne.set(speed);
+        m_shooterTwo.set(-speed);
+    }
+
     public void hoodAdjustmentCoverIt(boolean decreaseAngle) {
         if (decreaseAngle) {
             m_hood.set(0.1);
