@@ -174,5 +174,41 @@ TrajectoryConfig config = new TrajectoryConfig(
 
   public IntakeSubsystem getIntake() {
     return m_intake;
+}
+
+private Command generateTrajectoryCommand(Pose2d start, Pose2d end, List<Translation2d> waypoints, TrajectoryConfig config) {
+    currentTrajectory = TrajectoryGenerator.generateTrajectory(
+        start,
+        waypoints,
+        end,
+        config
+    );
+
+    var thetaController = new ProfiledPIDController(
+        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    Command swerveCommand = new SwerveControllerCommand(
+        currentTrajectory,
+        m_robotDrive::getPose,
+        DriveConstants.kDriveKinematics,
+        new PIDController(AutoConstants.kPXController, 0, 0),
+        new PIDController(AutoConstants.kPYController, 0, 0),
+        thetaController,
+        m_robotDrive::setModuleStates,
+        m_robotDrive) {
+            
+        @Override
+        public void execute() {
+            super.execute();
+        }
+    };
+
+    return swerveCommand
+    .andThen(
+      Commands.runOnce(
+        () -> m_robotDrive.drive(0, 0, 0, false)
+      )
+    );
   }
 }
