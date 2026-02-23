@@ -101,48 +101,10 @@ public class RobotContainer {
             m_robotDrive));
   }
 
+private Command getMoveForward(TrajectoryConfig config) {
 
-  private Command getmoveForward(){
-
-TrajectoryConfig config = new TrajectoryConfig(
-      AutoConstants.kMaxSpeedMetersPerSecond,
-      AutoConstants.kMaxAccelerationMetersPerSecondSquared
-    )
-    .setKinematics(DriveConstants.kDriveKinematics)
-    .setStartVelocity(0)
-    .setEndVelocity(0);
-
-    Trajectory moveForwardTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(0, 0), new Translation2d(0, 0)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(0, 3, new Rotation2d(0)),
-        config);
-
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        moveForwardTrajectory,
-        m_robotDrive::getPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
-
-        // Position controllers
-        new PIDController(AutoConstants.kPXController, 0, 0),
-        new PIDController(AutoConstants.kPYController, 0, 0),
-        thetaController,
-        m_robotDrive::setModuleStates,
-        m_robotDrive);
-
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(moveForwardTrajectory.getInitialPose());
-
-    // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-  }
+  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(0, 1, new Rotation2d(0)), null, config);
+}
 
 private Command getShootPosition() {
   if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
@@ -212,10 +174,10 @@ private Command getClimb() {
     Command autoCommand = Commands.none();
 
     if (choices[0] == "AUTO 1"){
-        autoCommand = getmoveForward();
+        autoCommand = getMoveForward(config);
 
       } else if (choices[0] == "AUTO 2"){
-        autoCommand = getmoveForward()
+        autoCommand = getMoveForward(config)
         .andThen(getShootPosition())
         .andThen(getShoot())
         .andThen(getDriveToLadder(config))
