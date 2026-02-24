@@ -64,6 +64,8 @@ public final class Constants {
     public static final int kShooterOneCanId = 14;
     public static final int kShooterTwoCanId = 15;
     public static final int kClimberCanId = 16;
+    public static final int kSliderCanId = 17;
+
 
     public static final int kGyroID = 0;
 
@@ -71,8 +73,8 @@ public final class Constants {
     public static final int dUpperLimitSwitchPort = 1;
     public static final int dTopElevatorLimitSwitchPort = 2;
     public static final int dBottomElevatorLimitSwitchPort = 3;
-
-    public static final int sElevatorSliderPort = 4;
+    public static final int dFrontElevatorSliderLimitSwitchPort = 4;
+    public static final int dBackElevatorSliderLimitSwitchPort = 5;
 
 
     public static final boolean kGyroReversed = false;
