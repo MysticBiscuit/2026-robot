@@ -21,7 +21,10 @@ public class ElevatorSubsystem extends SubsystemBase{
    private final DigitalInput m_elevatorTopLimit;
    private final DigitalInput m_elevatorBottomLimit;
 
-   private final Servo m_elevatorSlider;
+   private final SparkMax m_elevatorSlider;
+
+   private final DigitalInput m_elevatorSliderFrontLimit;
+   private final DigitalInput m_elevatorSliderBackLimit;
 
    private boolean m_fullClimbRequested = false;
    private boolean m_autoClimbRequested = false;
@@ -34,7 +37,10 @@ public class ElevatorSubsystem extends SubsystemBase{
     m_elevatorTopLimit = new DigitalInput(Constants.DriveConstants.dTopElevatorLimitSwitchPort);
     m_elevatorBottomLimit = new DigitalInput(Constants.DriveConstants.dBottomElevatorLimitSwitchPort);
 
-    m_elevatorSlider = new Servo(Constants.DriveConstants.sElevatorSliderPort);
+    m_elevatorSlider = new SparkMax(Constants.DriveConstants.kSliderCanId, MotorType.kBrushless);
+
+    m_elevatorSliderFrontLimit = new DigitalInput(Constants.DriveConstants.dFrontElevatorSliderLimitSwitchPort);
+    m_elevatorSliderBackLimit = new DigitalInput(Constants.DriveConstants.dBackElevatorSliderLimitSwitchPort);
    }
 
    @Override
@@ -139,11 +145,21 @@ public class ElevatorSubsystem extends SubsystemBase{
    }
 
    private void elevatorSlideCommand(boolean elevatorSlideOutRequested, boolean elevatorSlideInRequested) {
-      if (elevatorSlideOutRequested) {
-         m_elevatorSlider.set(1);
-         elevatorSlideOutRequested = false;
-      } else if (elevatorSlideInRequested) {
+      if (elevatorSlideOutRequested && !m_elevatorSliderFrontLimit.get()) {
+         m_elevatorSlider.set(0.25);
+
+      } else if (elevatorSlideInRequested && !m_elevatorSliderBackLimit.get()) {
+         m_elevatorSlider.set(-0.25);
+      } else {
          m_elevatorSlider.set(0);
+      }
+
+      if (m_elevatorSliderFrontLimit.get()) {
+         elevatorSlideOutRequested = false;
+
+      }
+
+      if (m_elevatorSliderBackLimit.get()) {
          elevatorSlideInRequested = false;
       }
    }
