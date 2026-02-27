@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
@@ -59,6 +60,8 @@ public class ElevatorSubsystem extends SubsystemBase{
       if (fullClimbRequested) {
       climbPartOne()
       .andThen(
+         moveBack()
+         ).andThen(
          climbPartTwo()
       ).andThen(
          climbPartThree(m_fullClimbRequested)
@@ -95,6 +98,12 @@ public class ElevatorSubsystem extends SubsystemBase{
             m_climber.set(0);
          }
       };
+   }
+
+   private Command moveBack() {
+      return new RunCommand(
+         () -> m_elevatorSlider.set(-0.25))
+         .withTimeout(2);
    }
 
    private Command climbPartTwo() {
