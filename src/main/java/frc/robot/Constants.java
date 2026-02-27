@@ -75,6 +75,7 @@ public final class Constants {
     public static final int dBottomElevatorLimitSwitchPort = 3;
     public static final int dFrontElevatorSliderLimitSwitchPort = 4;
     public static final int dBackElevatorSliderLimitSwitchPort = 5;
+    public static final int dMidwayBackSlideLimitSwitchPort = 6;
 
 
     public static final boolean kGyroReversed = false;

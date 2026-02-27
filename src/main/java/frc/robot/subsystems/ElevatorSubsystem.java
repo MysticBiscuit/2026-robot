@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
@@ -18,14 +20,13 @@ import edu.wpi.first.wpilibj.Servo;
 
 public class ElevatorSubsystem extends SubsystemBase{
    private final SparkMax m_climber;
+   private final SparkMax m_elevatorSlider;
    
    private final DigitalInput m_elevatorTopLimit;
    private final DigitalInput m_elevatorBottomLimit;
-
-   private final SparkMax m_elevatorSlider;
-
    private final DigitalInput m_elevatorSliderFrontLimit;
    private final DigitalInput m_elevatorSliderBackLimit;
+   private final DigitalInput m_slideBackSmallLimit;
 
    private boolean m_fullClimbRequested = false;
    private boolean m_autoClimbRequested = false;
@@ -34,14 +35,13 @@ public class ElevatorSubsystem extends SubsystemBase{
 
    public ElevatorSubsystem() {
     m_climber = new SparkMax(Constants.DriveConstants.kClimberCanId, MotorType.kBrushless);
+    m_elevatorSlider = new SparkMax(Constants.DriveConstants.kSliderCanId, MotorType.kBrushless);
 
     m_elevatorTopLimit = new DigitalInput(Constants.DriveConstants.dTopElevatorLimitSwitchPort);
     m_elevatorBottomLimit = new DigitalInput(Constants.DriveConstants.dBottomElevatorLimitSwitchPort);
-
-    m_elevatorSlider = new SparkMax(Constants.DriveConstants.kSliderCanId, MotorType.kBrushless);
-
     m_elevatorSliderFrontLimit = new DigitalInput(Constants.DriveConstants.dFrontElevatorSliderLimitSwitchPort);
     m_elevatorSliderBackLimit = new DigitalInput(Constants.DriveConstants.dBackElevatorSliderLimitSwitchPort);
+    m_slideBackSmallLimit = new DigitalInput(Constants.DriveConstants.dMidwayBackSlideLimitSwitchPort);
    }
 
    @Override
@@ -103,7 +103,7 @@ public class ElevatorSubsystem extends SubsystemBase{
    private Command moveBack() {
       return new RunCommand(
          () -> m_elevatorSlider.set(-0.25))
-         .withTimeout(2);
+         .until(getMidLimitSwitchValue());
    }
 
    private Command climbPartTwo() {
@@ -177,6 +177,14 @@ public void updateWithControls(boolean fullClimbRequested, boolean elevatorSlide
    m_fullClimbRequested = fullClimbRequested;
    m_elevatorSlideOutRequested = elevatorSlideOutRequested;
    m_elevatorSlideInRequested = elevatorSlideInRequested;
+}
+
+public BooleanSupplier getMidLimitSwitchValue() {
+   boolean limitStop = !m_slideBackSmallLimit.get();
+
+   BooleanSupplier limitValue = () -> limitStop;
+
+   return limitValue;
 }
 
 public boolean rungOneOrThreeReached() {
