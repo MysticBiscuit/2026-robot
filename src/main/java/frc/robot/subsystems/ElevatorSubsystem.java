@@ -29,8 +29,6 @@ public class ElevatorSubsystem extends SubsystemBase{
 
    private boolean m_fullClimbRequested = false;
    private boolean m_autoClimbRequested = false;
-   private boolean m_elevatorSlideOutRequested = false;
-   private boolean m_elevatorSlideInRequested = false;
 
    public ElevatorSubsystem() {
     m_climber = new SparkMax(Constants.DriveConstants.kClimberCanId, MotorType.kBrushless);
@@ -48,7 +46,6 @@ public class ElevatorSubsystem extends SubsystemBase{
    public void periodic() {
     if (!DriverStation.isAutonomous()){
         fullClimbCommand(m_fullClimbRequested);
-        elevatorSlideCommand(m_elevatorSlideOutRequested, m_elevatorSlideInRequested);
     }
     
     if (DriverStation.isAutonomous()) {
@@ -153,7 +150,7 @@ public class ElevatorSubsystem extends SubsystemBase{
       };
    }
 
-   private void elevatorSlideCommand(boolean elevatorSlideOutRequested, boolean elevatorSlideInRequested) {
+   public void elevatorSlideCommand(boolean elevatorSlideOutRequested, boolean elevatorSlideInRequested) {
       if (elevatorSlideOutRequested && !m_elevatorSliderFrontLimit.get()) {
          m_elevatorSlider.set(0.25);
 
@@ -173,10 +170,8 @@ public class ElevatorSubsystem extends SubsystemBase{
       }
    }
 
-public void updateWithControls(boolean fullClimbRequested, boolean elevatorSlideOutRequested, boolean elevatorSlideInRequested) {
+public void updateWithControls(boolean fullClimbRequested) {
    m_fullClimbRequested = fullClimbRequested;
-   m_elevatorSlideOutRequested = elevatorSlideOutRequested;
-   m_elevatorSlideInRequested = elevatorSlideInRequested;
 }
 
 public boolean rungOneOrThreeReached() {
