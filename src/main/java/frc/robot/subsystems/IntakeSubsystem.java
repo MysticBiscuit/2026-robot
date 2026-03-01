@@ -76,8 +76,8 @@ public class IntakeSubsystem extends SubsystemBase{
             m_armExtenderOne.set(-0.1);
             m_armExtenderTwo.set(0.1);
         } else if (retractBox && m_upperLimit.get()) {
-            m_armExtenderOne.set(0.3);
-            m_armExtenderTwo.set(-0.3);
+            m_armExtenderOne.set(0.4);
+            m_armExtenderTwo.set(-0.4);
         } else {
             m_armExtenderOne.set(0);
             m_armExtenderTwo.set(0);
