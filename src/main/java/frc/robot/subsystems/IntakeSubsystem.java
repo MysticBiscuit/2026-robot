@@ -17,9 +17,8 @@ public class IntakeSubsystem extends SubsystemBase{
     private SparkMax m_armExtenderOne;
     private SparkMax m_armExtenderTwo;
     private SparkMax m_intakeMotor;
-    private SparkMax m_rollerOne;
-    private SparkMax m_shooterOne;
-    private SparkMax m_shooterTwo;
+    private SparkMax m_shooterIndexer;
+    private SparkMax m_shooter;
     private SparkMax m_hood;
 
     private DigitalInput m_lowerLimit;
@@ -37,9 +36,8 @@ public class IntakeSubsystem extends SubsystemBase{
         m_armExtenderOne = new SparkMax(Constants.DriveConstants.kIntakeExtenderOneCanId, MotorType.kBrushless);
         m_armExtenderTwo = new SparkMax(Constants.DriveConstants.kIntakeExtenderTwoCanId, MotorType.kBrushless);
         m_intakeMotor = new SparkMax(Constants.DriveConstants.kIntakeMechanismCanId, MotorType.kBrushless);
-        m_rollerOne = new SparkMax(Constants.DriveConstants.kBallConductorOneCanId, MotorType.kBrushless);
-        m_shooterOne = new SparkMax(Constants.DriveConstants.kShooterOneCanId, MotorType.kBrushless);
-        m_shooterTwo = new SparkMax(Constants.DriveConstants.kShooterTwoCanId, MotorType.kBrushless);
+        m_shooterIndexer = new SparkMax(Constants.DriveConstants.kShooterIndexerCanId, MotorType.kBrushless);
+        m_shooter = new SparkMax(Constants.DriveConstants.kShooterCanId, MotorType.kBrushless);
         m_hood = new SparkMax(Constants.DriveConstants.kIntakeHoodCanId, MotorType.kBrushless);
         
         m_lowerLimit = new DigitalInput(Constants.DriveConstants.dLowerLimitSwitchPort);
@@ -97,20 +95,24 @@ public class IntakeSubsystem extends SubsystemBase{
     public void intakeTime(boolean suckIt) {
         if(suckIt) {
             m_intakeMotor.set(-1);
-            m_rollerOne.set(0.1);
         }else {
             m_intakeMotor.set(0);
-            m_rollerOne.set(0);
         }
     }
 
     public void shootingTime(boolean shootIt) {
         if(shootIt) {
-            m_shooterOne.set(1);
-            m_shooterTwo.set(-1);
+            m_shooter.set(-0.7);
         } else {
-            m_shooterOne.set(0);
-            m_shooterTwo.set(0);
+            m_shooter.set(0);
+        }
+    }
+
+    public void indexIt(boolean indexIt) {
+        if(indexIt) {
+            m_shooterIndexer.set(0.65);
+        } else {
+            m_shooterIndexer.set(0);
         }
     }
 
