@@ -45,32 +45,39 @@ public class ElevatorSubsystem extends SubsystemBase{
    @Override
    public void periodic() {
     if (!DriverStation.isAutonomous()){
-        fullClimbCommand(m_fullClimbRequested);
+        fullClimbCommand(m_fullClimbRequested, m_autoClimbRequested);
     }
     
     if (DriverStation.isAutonomous()) {
-         autoClimbCommand(m_autoClimbRequested);
+         autoClimbCommand(m_fullClimbRequested, m_autoClimbRequested);
     }
    }
    
-   private void fullClimbCommand(boolean fullClimbRequested) {
+   private void fullClimbCommand(boolean fullClimbRequested, boolean m_autoClimbRequested) {
       if (fullClimbRequested) {
       climbPartOne()
       .andThen(
-         moveBack()
+         climbPartTwo()
          ).andThen(
+         climbPartThree()
+      ).andThen(
+         climbPartOne()
+      ).andThen(
          climbPartTwo()
       ).andThen(
-         climbPartThree(m_fullClimbRequested)
+         climbPartOne()
+      ).andThen(
+         climbPartFour(fullClimbRequested, m_autoClimbRequested)
       );
       } else {
          m_climber.set(0);
       }
    }
 
-   private void autoClimbCommand(boolean autoClimbRequested) {
-      if (autoClimbRequested) {
-         climbPartThree(m_fullClimbRequested);
+   private void autoClimbCommand(boolean m_autoClimbRequested, boolean fullClimbRequested) {
+      if (m_autoClimbRequested) {
+         climbPartOne()
+         .andThen(climbPartFour(fullClimbRequested, m_autoClimbRequested));
       }
    }
 
@@ -79,7 +86,7 @@ public class ElevatorSubsystem extends SubsystemBase{
          
          @Override
          public boolean isFinished() {
-            return rungOneOrThreeReached();
+            return bigArmsAreUp();
          }
 
          @Override
@@ -97,7 +104,7 @@ public class ElevatorSubsystem extends SubsystemBase{
       };
    }
 
-   private Command moveBack() {
+   private Command climbPartThree() {
       return new RunCommand(
          () -> m_elevatorSlider.set(-0.25))
          .withTimeout(2);
@@ -126,12 +133,12 @@ public class ElevatorSubsystem extends SubsystemBase{
       };
    }
 
-   private Command climbPartThree(boolean fullClimbRequested) {
+   private Command climbPartFour(boolean fullClimbRequested, boolean m_autoClimbRequested) {
       return new Command() {
          
          @Override
          public boolean isFinished() {
-            return rungOneOrThreeReached();
+            return bigArmsAreUp();
          }
 
          @Override
@@ -174,7 +181,7 @@ public void updateWithControls(boolean fullClimbRequested) {
    m_fullClimbRequested = fullClimbRequested;
 }
 
-public boolean rungOneOrThreeReached() {
+public boolean bigArmsAreUp() {
    return !m_elevatorTopLimit.get();
 }
 
