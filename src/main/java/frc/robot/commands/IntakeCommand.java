@@ -16,11 +16,8 @@ public class IntakeCommand extends Command {
 
     @Override
     public void execute() {
-       
-        m_intake.updateWithControls(
-            m_Controller.getXButton());
-
         m_intake.shootingTime(m_Controller.getRightBumperButton());
         m_intake.intakeTime(m_Controller.getLeftBumperButton());
         m_intake.boxControls(m_Controller.getRightTriggerAxis() > 0.8, m_Controller.getLeftTriggerAxis() > 0.8);
+        m_intake.indexIt(m_Controller.getXButton());
 }}

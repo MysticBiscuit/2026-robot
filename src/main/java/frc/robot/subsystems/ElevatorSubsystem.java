@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
@@ -28,8 +29,6 @@ public class ElevatorSubsystem extends SubsystemBase{
 
    private boolean m_fullClimbRequested = false;
    private boolean m_autoClimbRequested = false;
-   private boolean m_elevatorSlideOutRequested = false;
-   private boolean m_elevatorSlideInRequested = false;
 
    public ElevatorSubsystem() {
     m_climber = new SparkMax(Constants.DriveConstants.kClimberCanId, MotorType.kBrushless);
@@ -46,31 +45,39 @@ public class ElevatorSubsystem extends SubsystemBase{
    @Override
    public void periodic() {
     if (!DriverStation.isAutonomous()){
-        fullClimbCommand(m_fullClimbRequested);
-        elevatorSlideCommand(m_elevatorSlideOutRequested, m_elevatorSlideInRequested);
+        fullClimbCommand(m_fullClimbRequested, m_autoClimbRequested);
     }
     
     if (DriverStation.isAutonomous()) {
-         autoClimbCommand(m_autoClimbRequested);
+         autoClimbCommand(m_fullClimbRequested, m_autoClimbRequested);
     }
    }
    
-   private void fullClimbCommand(boolean fullClimbRequested) {
+   private void fullClimbCommand(boolean fullClimbRequested, boolean m_autoClimbRequested) {
       if (fullClimbRequested) {
       climbPartOne()
       .andThen(
          climbPartTwo()
+         ).andThen(
+         climbPartThree()
       ).andThen(
-         climbPartThree(m_fullClimbRequested)
+         climbPartOne()
+      ).andThen(
+         climbPartTwo()
+      ).andThen(
+         climbPartOne()
+      ).andThen(
+         climbPartFour(fullClimbRequested, m_autoClimbRequested)
       );
       } else {
          m_climber.set(0);
       }
    }
 
-   private void autoClimbCommand(boolean autoClimbRequested) {
-      if (autoClimbRequested) {
-         climbPartThree(m_fullClimbRequested);
+   private void autoClimbCommand(boolean m_autoClimbRequested, boolean fullClimbRequested) {
+      if (m_autoClimbRequested) {
+         climbPartOne()
+         .andThen(climbPartFour(fullClimbRequested, m_autoClimbRequested));
       }
    }
 
@@ -79,7 +86,7 @@ public class ElevatorSubsystem extends SubsystemBase{
          
          @Override
          public boolean isFinished() {
-            return rungOneOrThreeReached();
+            return bigArmsAreUp();
          }
 
          @Override
@@ -95,6 +102,12 @@ public class ElevatorSubsystem extends SubsystemBase{
             m_climber.set(0);
          }
       };
+   }
+
+   private Command climbPartThree() {
+      return new RunCommand(
+         () -> m_elevatorSlider.set(-0.25))
+         .withTimeout(2);
    }
 
    private Command climbPartTwo() {
@@ -120,12 +133,12 @@ public class ElevatorSubsystem extends SubsystemBase{
       };
    }
 
-   private Command climbPartThree(boolean fullClimbRequested) {
+   private Command climbPartFour(boolean fullClimbRequested, boolean m_autoClimbRequested) {
       return new Command() {
          
          @Override
          public boolean isFinished() {
-            return rungOneOrThreeReached();
+            return bigArmsAreUp();
          }
 
          @Override
@@ -144,7 +157,7 @@ public class ElevatorSubsystem extends SubsystemBase{
       };
    }
 
-   private void elevatorSlideCommand(boolean elevatorSlideOutRequested, boolean elevatorSlideInRequested) {
+   public void elevatorSlideCommand(boolean elevatorSlideOutRequested, boolean elevatorSlideInRequested) {
       if (elevatorSlideOutRequested && !m_elevatorSliderFrontLimit.get()) {
          m_elevatorSlider.set(0.25);
 
@@ -164,13 +177,11 @@ public class ElevatorSubsystem extends SubsystemBase{
       }
    }
 
-public void updateWithControls(boolean fullClimbRequested, boolean elevatorSlideOutRequested, boolean elevatorSlideInRequested) {
+public void updateWithControls(boolean fullClimbRequested) {
    m_fullClimbRequested = fullClimbRequested;
-   m_elevatorSlideOutRequested = elevatorSlideOutRequested;
-   m_elevatorSlideInRequested = elevatorSlideInRequested;
 }
 
-public boolean rungOneOrThreeReached() {
+public boolean bigArmsAreUp() {
    return !m_elevatorTopLimit.get();
 }
 
