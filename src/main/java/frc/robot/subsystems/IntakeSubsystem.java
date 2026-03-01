@@ -73,8 +73,8 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public void boxControls(boolean extendBox, boolean retractBox) {
         if(extendBox && m_lowerLimit.get()) {
-            m_armExtenderOne.set(-0.05);
-            m_armExtenderTwo.set(0.05);
+            m_armExtenderOne.set(-0.1);
+            m_armExtenderTwo.set(0.1);
         } else if (retractBox && m_upperLimit.get()) {
             m_armExtenderOne.set(0.3);
             m_armExtenderTwo.set(-0.3);
