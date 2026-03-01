@@ -1,8 +1,8 @@
 package frc.robot.subsystems;
 
 import com.fasterxml.jackson.databind.ser.std.InetSocketAddressSerializer;
-// import com.revrobotics.AbsoluteEncoder;
-// import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -21,6 +21,9 @@ public class IntakeSubsystem extends SubsystemBase{
     private SparkMax m_shooterOne;
     private SparkMax m_shooterTwo;
     private SparkMax m_hood;
+    private SparkAbsoluteEncoder m_extenderOneEncoder;
+    private SparkAbsoluteEncoder m_extenderTwoEncoder;
+
 
     private DigitalInput m_lowerLimit;
     private DigitalInput m_upperLimit;
@@ -44,6 +47,8 @@ public class IntakeSubsystem extends SubsystemBase{
         
         m_lowerLimit = new DigitalInput(Constants.DriveConstants.dLowerLimitSwitchPort);
         m_upperLimit = new DigitalInput(Constants.DriveConstants.dUpperLimitSwitchPort);
+
+        m_extenderOneEncoder = arm
     }
 
     @Override
