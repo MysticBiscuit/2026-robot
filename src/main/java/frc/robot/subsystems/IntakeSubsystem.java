@@ -7,7 +7,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
-// import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,7 +24,7 @@ public class IntakeSubsystem extends SubsystemBase{
     private DigitalInput m_lowerLimit;
     private DigitalInput m_upperLimit;
 
-    // private final Timer m_systemTimer = new Timer();
+    private final Timer m_systemTimer = new Timer();
     private boolean m_boxExtendRequested = false;
     private boolean m_boxRetractRequested = false;
     //private SparkAbsoluteEncoder armExtenderPosition = m_armExtenderOne.getAbsoluteEncoder();
@@ -95,12 +95,13 @@ public class IntakeSubsystem extends SubsystemBase{
     public void intakeTime(boolean suckIt) {
         if(suckIt) {
             m_intakeMotor.set(-1);
+            m_systemTimer.reset();
         }else {
             m_intakeMotor.set(0);
         }
     }
 
-    public void shootingTime(boolean shootIt) {
+    /** public void shootingTime(boolean shootIt) {
         if(shootIt) {
             m_shooter.set(-0.7);
         } else {
@@ -110,6 +111,29 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public void indexIt(boolean indexIt) {
         if(indexIt) {
+            m_shooterIndexer.set(0.65);
+        } else {
+            m_shooterIndexer.set(0);
+        }
+    } */
+
+    public void shootingTime(boolean shootIt) {
+        boolean spunUp;
+        
+        if (shootIt) {
+            m_shooter.set(-0.7);
+            m_systemTimer.reset();
+        } else {
+            m_shooter.set(0);
+        }
+
+        if (m_systemTimer.get() >= 3) {
+            spunUp = true;
+        } else {
+            spunUp = false;
+        }
+
+        if (spunUp && shootIt) {
             m_shooterIndexer.set(0.65);
         } else {
             m_shooterIndexer.set(0);
