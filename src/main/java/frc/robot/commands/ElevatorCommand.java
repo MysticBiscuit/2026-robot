@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.Constants;
 
 public class ElevatorCommand extends Command{
     private final ElevatorSubsystem m_elevator;
@@ -21,5 +22,11 @@ public class ElevatorCommand extends Command{
         );
 
         m_elevator.elevatorSlideCommand(m_controller.getBButton(), m_controller.getAButton());
+
+        if (m_controller.getPOV() == 0) {
+            Constants.DriveConstants.slowDownModifier = 0.5;
+        } else {
+            Constants.DriveConstants.slowDownModifier = 1;
+        }
     }
 }
