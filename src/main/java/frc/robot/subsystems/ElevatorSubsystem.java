@@ -115,7 +115,7 @@ public class ElevatorSubsystem extends SubsystemBase{
          
          @Override
          public boolean isFinished() {
-            return rungTwoReached();
+            return smallArmsAreUp();
          }
 
          @Override
@@ -185,7 +185,7 @@ public boolean bigArmsAreUp() {
    return !m_elevatorTopLimit.get();
 }
 
-public boolean rungTwoReached() {
+public boolean smallArmsAreUp() {
    return !m_elevatorBottomLimit.get();
 }
 }
