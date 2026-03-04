@@ -22,8 +22,24 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static boolean m_slowModeStart = false;
+  public static boolean m_slowModeEnd = false;
+
   public static final class DriveConstants {
-    public static double slowDownModifier;
+    public static double slowDownModifier = slowModeDetermination(m_slowModeStart, m_slowModeEnd);
+
+    public static double slowModeDetermination(boolean slowModeStart, boolean slowModeEnd) {
+      if (slowModeEnd) {
+          slowModeStart = false;
+          slowModeEnd = false;
+          return 0.5;
+        } else if (slowModeStart) {
+          return 1;
+        } else {
+          return 1;
+        }
+    }
+
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
     public static final double kMaxSpeedMetersPerSecond = 4.8;
@@ -78,6 +94,11 @@ public final class Constants {
 
 
     public static final boolean kGyroReversed = false;
+
+    public static void updateWithControls(boolean slowModeStart, boolean slowModeEnd) {
+      m_slowModeStart = slowModeStart;
+      m_slowModeEnd = slowModeEnd;
+  }
   }
 
   public static final class ModuleConstants {
@@ -120,8 +141,5 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
-
-  public void updateWithControls(boolean slowMode) {
-    
-  }
+  
 }

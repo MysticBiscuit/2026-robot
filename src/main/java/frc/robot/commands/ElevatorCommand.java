@@ -21,12 +21,11 @@ public class ElevatorCommand extends Command{
             m_controller.getYButton()
         );
 
-        m_elevator.elevatorSlideCommand(m_controller.getBButton(), m_controller.getAButton());
+        Constants.DriveConstants.updateWithControls (
+            m_controller.getPOV() == 0,
+            m_controller.getPOV() == 180);
+        
 
-        if (m_controller.getPOV() == 0) {
-            Constants.DriveConstants.slowDownModifier = 0.5;
-        } else {
-            Constants.DriveConstants.slowDownModifier = 1;
-        }
+        m_elevator.elevatorSlideCommand(m_controller.getBButton(), m_controller.getAButton());
     }
 }

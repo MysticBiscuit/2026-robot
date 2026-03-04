@@ -177,15 +177,15 @@ public class ElevatorSubsystem extends SubsystemBase{
       }
    }
 
-public void updateWithControls(boolean fullClimbRequested) {
+   public void updateWithControls(boolean fullClimbRequested) {
    m_fullClimbRequested = fullClimbRequested;
-}
+   }
 
-public boolean bigArmsAreUp() {
+   public boolean bigArmsAreUp() {
    return !m_elevatorTopLimit.get();
-}
+   }
 
-public boolean smallArmsAreUp() {
+   public boolean smallArmsAreUp() {
    return !m_elevatorBottomLimit.get();
-}
+   }
 }
