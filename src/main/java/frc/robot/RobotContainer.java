@@ -15,6 +15,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -37,6 +38,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.LimelightHelpers;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -52,6 +54,9 @@ public class RobotContainer {
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+
+  public Trajectory currentTrajectory;
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -96,48 +101,57 @@ public class RobotContainer {
             m_robotDrive));
   }
 
+private Command getMoveForward(TrajectoryConfig config) {
 
-  private Command getmoveForward(){
+  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(0, 1, new Rotation2d(0)), null, config);
+}
 
-TrajectoryConfig config = new TrajectoryConfig(
-      AutoConstants.kMaxSpeedMetersPerSecond,
-      AutoConstants.kMaxAccelerationMetersPerSecondSquared
-    )
-    .setKinematics(DriveConstants.kDriveKinematics)
-    .setStartVelocity(0)
-    .setEndVelocity(0);
-
-    Trajectory moveForwardTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(0, 0), new Translation2d(0, 0)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(0, 3, new Rotation2d(0)),
-        config);
-
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        moveForwardTrajectory,
-        m_robotDrive::getPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
-
-        // Position controllers
-        new PIDController(AutoConstants.kPXController, 0, 0),
-        new PIDController(AutoConstants.kPYController, 0, 0),
-        thetaController,
-        m_robotDrive::setModuleStates,
-        m_robotDrive);
-
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(moveForwardTrajectory.getInitialPose());
-
-    // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+private Command getShootPosition() {
+  if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+    LimelightHelpers.SetFiducialIDFiltersOverride("", new int[]{25});
+  } else if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+    LimelightHelpers.SetFiducialIDFiltersOverride("", new int[]{9});
   }
+
+  if (LimelightHelpers.getTV("limelight")) {
+    return new RunCommand(
+      () -> m_robotDrive.drive(
+        LimelightHelpers.getTY("limelight") * -0.1,
+        LimelightHelpers.getTX("limelight") * -0.5,
+        LimelightHelpers.getTX("limelight") * -0.5,
+        false),
+        m_robotDrive
+    )
+    .withTimeout(3)
+    .andThen(
+      Commands.runOnce(
+        () -> m_robotDrive.drive(0, 0, 0, false)
+      )
+    );
+  } else {
+    return Commands.none();
+  }
+}
+
+private Command getShoot() {
+  return new RunCommand(
+    () -> m_intake.shoot(1)
+  ).withTimeout(3);
+}
+
+private Command getDriveToLadder(TrajectoryConfig config) {
+
+  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(0, 1, new Rotation2d(0)), null, config);
+}
+
+private Command getClimb() {
+  return new RunCommand(
+    () -> m_elevator.climbPartOne()
+  );
+}
+
+
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -160,7 +174,15 @@ TrajectoryConfig config = new TrajectoryConfig(
     Command autoCommand = Commands.none();
 
     if (choices[0] == "AUTO 1"){
-        autoCommand = getmoveForward();
+        autoCommand = getMoveForward(config);
+
+      } else if (choices[0] == "AUTO 2"){
+        autoCommand = getMoveForward(config)
+        .andThen(getShootPosition())
+        .andThen(getShoot())
+        .andThen(getDriveToLadder(config))
+        .andThen(getClimb());
+
       } else {
         return Commands.none();
     }
@@ -174,5 +196,41 @@ TrajectoryConfig config = new TrajectoryConfig(
 
   public IntakeSubsystem getIntake() {
     return m_intake;
+}
+
+private Command generateTrajectoryCommand(Pose2d start, Pose2d end, List<Translation2d> waypoints, TrajectoryConfig config) {
+    currentTrajectory = TrajectoryGenerator.generateTrajectory(
+        start,
+        waypoints,
+        end,
+        config
+    );
+
+    var thetaController = new ProfiledPIDController(
+        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    Command swerveCommand = new SwerveControllerCommand(
+        currentTrajectory,
+        m_robotDrive::getPose,
+        DriveConstants.kDriveKinematics,
+        new PIDController(AutoConstants.kPXController, 0, 0),
+        new PIDController(AutoConstants.kPYController, 0, 0),
+        thetaController,
+        m_robotDrive::setModuleStates,
+        m_robotDrive) {
+            
+        @Override
+        public void execute() {
+            super.execute();
+        }
+    };
+
+    return swerveCommand
+    .andThen(
+      Commands.runOnce(
+        () -> m_robotDrive.drive(0, 0, 0, false)
+      )
+    );
   }
 }
