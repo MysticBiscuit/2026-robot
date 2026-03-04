@@ -18,10 +18,11 @@ public class ElevatorCommand extends Command{
     @Override
     public void execute() {
         m_elevator.updateWithControls(
-            m_controller.getYButton()
+            m_controller.getPOV() == 90
         );
 
-        m_elevator.elevatorSlideCommand(m_controller.getBButton(), m_controller.getAButton());
+        m_elevator.elevatorSlideCommand(m_controller.getBButton(), m_controller.getXButton());
+        m_elevator.elevatorManualControls(m_controller.getAButton(), m_controller.getYButton());
 
         if (m_controller.getPOV() == 0) {
             Constants.DriveConstants.slowDownModifier = 0.5;
