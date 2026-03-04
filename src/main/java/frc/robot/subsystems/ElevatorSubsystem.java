@@ -177,6 +177,16 @@ public class ElevatorSubsystem extends SubsystemBase{
       }
    }
 
+   public void elevatorManualControls(boolean elevatorUp, boolean elevatorDown) {
+      if (elevatorUp) {
+         m_climber.set(0.25);
+      } else if (elevatorDown) {
+         m_climber.set(-0.25);
+      } else if (!m_fullClimbRequested) {
+         m_climber.set(0);
+      }
+   }
+
 public void updateWithControls(boolean fullClimbRequested) {
    m_fullClimbRequested = fullClimbRequested;
 }
