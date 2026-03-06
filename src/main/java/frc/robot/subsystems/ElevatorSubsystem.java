@@ -166,15 +166,6 @@ public class ElevatorSubsystem extends SubsystemBase{
       } else {
          m_elevatorSlider.set(0);
       }
-
-      if (m_elevatorSliderFrontLimit.get()) {
-         elevatorSlideOutRequested = false;
-
-      }
-
-      if (m_elevatorSliderBackLimit.get()) {
-         elevatorSlideInRequested = false;
-      }
    }
 
    public void elevatorManualControls(boolean elevatorUp, boolean elevatorDown) {
