@@ -81,7 +81,7 @@ public class ElevatorSubsystem extends SubsystemBase{
       }
    }
 
-   private Command climbPartOne() {
+   public Command climbPartOne() {
       return new Command() {
          
          @Override
@@ -174,6 +174,16 @@ public class ElevatorSubsystem extends SubsystemBase{
 
       if (m_elevatorSliderBackLimit.get()) {
          elevatorSlideInRequested = false;
+      }
+   }
+
+   public void elevatorManualControls(boolean elevatorUp, boolean elevatorDown) {
+      if (elevatorUp) {
+         m_climber.set(0.25);
+      } else if (elevatorDown) {
+         m_climber.set(-0.25);
+      } else if (!m_fullClimbRequested) {
+         m_climber.set(0);
       }
    }
 
