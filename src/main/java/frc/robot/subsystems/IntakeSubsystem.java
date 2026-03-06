@@ -132,13 +132,13 @@ public class IntakeSubsystem extends SubsystemBase{
         }
     }
 
-    public void hoodAdjustmentCoverIt(boolean decreaseAngle) {
+   /**  public void hoodAdjustmentCoverIt(boolean decreaseAngle) {
         if (decreaseAngle) {
             m_hood.set(0.1);
         } else {
             m_hood.set(0);
         }
-    }
+    } 
 
     public void hoodAdjustmentOpenIt(boolean increaseAngle) {
         if (increaseAngle) {
@@ -146,7 +146,7 @@ public class IntakeSubsystem extends SubsystemBase{
         } else {
             m_hood.set(0);
         }
-    }
+    }*/
 
     public void updateWithControls(boolean armKillSwitch) {
         m_armKillSwitch = armKillSwitch;
