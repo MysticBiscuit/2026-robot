@@ -18,7 +18,7 @@ public class IntakeCommand extends Command {
     public void execute() {
         m_intake.shootingTime(m_Controller.getRightTriggerAxis() > 0.8);
         m_intake.intakeTime(m_Controller.getLeftTriggerAxis() > 0.8);
-        m_intake.boxControls(m_Controller.getLeftBumperButton(), m_Controller.getRightBumperButton());
-        m_intake.indexIt(m_Controller.getXButton());
+        m_intake.boxControls(m_Controller.getPOV() == 270, m_Controller.getRightBumperButton());
+        m_intake.indexIt(m_Controller.getLeftBumperButton());
         
 }}

@@ -17,6 +17,7 @@ public class Coms {
         m_autoChooser.setDefaultOption("NO AUTO", "-");
         m_autoChooser.addOption("AUTO 1", "AUTO 1");
         m_autoChooser.addOption("AUTO 2", "AUTO 2");
+        m_autoChooser.addOption("AUTO 3", "AUTO 3");
         SmartDashboard.putData("AUTO_SELECT", m_autoChooser);
 
     }
