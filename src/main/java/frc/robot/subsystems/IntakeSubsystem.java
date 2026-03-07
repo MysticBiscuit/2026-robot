@@ -132,6 +132,18 @@ public class IntakeSubsystem extends SubsystemBase{
         }
     }
 
+    public void intakeArmDown(double speed) {
+        m_armExtenderOne.set(speed);
+        m_armExtenderTwo.set(-speed);
+    }
+
+    public void intakeStop(boolean stop) {
+       if (stop) {
+        m_armExtenderOne.set(0);
+        m_armExtenderTwo.set(0);
+       }
+    }
+
    /**  public void hoodAdjustmentCoverIt(boolean decreaseAngle) {
         if (decreaseAngle) {
             m_hood.set(0.1);
