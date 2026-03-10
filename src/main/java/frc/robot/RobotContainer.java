@@ -184,24 +184,24 @@ private Command getMoveToNeutral(TrajectoryConfig config) {
     
     Command autoCommand = Commands.none();
 
-    if (choices[0] == "AUTO 1"){
+    if (choices[0].equals("AUTO 1")){
         autoCommand = getMoveForward(config);
 
-      } else if (choices[0] == "AUTO 2"){
+      } else if (choices[0].equals("AUTO 2")){
         autoCommand = getMoveForward(config)
         .andThen(getShootPosition())
         .andThen(getShoot())
         .andThen(getDriveToLadder(config))
         .andThen(getClimb());
 
-      } else if (choices[0] == "AUTO 3"){
+      } else if (choices[0].equals("AUTO 3")){
         autoCommand = getMoveToFixedShootPoint(config)
         .andThen(getShoot())
         .andThen(Commands.runOnce(
          () -> m_intake.stopShooter(true))
         );
         
-      } else if (choices [0] == "AUTO 4") {
+      } else if (choices [0].equals("AUTO 4")) {
         autoCommand = getPutArmDown()
         .andThen(Commands.runOnce(
           () -> m_intake.intakeStop(true)))
