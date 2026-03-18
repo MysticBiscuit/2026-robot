@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -22,6 +24,8 @@ public class Robot extends TimedRobot {
   private final Timer m_systemTimer = new Timer();
 
   private RobotContainer m_robotContainer;
+
+  private final Pigeon2 m_gyro = new Pigeon2(Constants.DriveConstants.kGyroID);
 
 
   /**
@@ -92,6 +96,7 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+      m_gyro.reset();
     }
   }
 

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.fasterxml.jackson.databind.ser.std.InetSocketAddressSerializer;
 // import com.revrobotics.AbsoluteEncoder;
 // import com.revrobotics.spark.SparkAbsoluteEncoder;
@@ -23,6 +24,8 @@ public class IntakeSubsystem extends SubsystemBase{
 
     private DigitalInput m_lowerLimit;
     private DigitalInput m_upperLimit;
+
+    private final Pigeon2 m_gyro = new Pigeon2(Constants.DriveConstants.kGyroID);
 
     public final Timer m_systemTimer = new Timer();
     private boolean m_boxExtendRequested = false;
@@ -142,6 +145,12 @@ public class IntakeSubsystem extends SubsystemBase{
         m_armExtenderOne.set(0);
         m_armExtenderTwo.set(0);
        }
+    }
+
+    public void zeroIt(boolean zero) {
+        if (zero) {
+            m_gyro.reset();
+        }
     }
 
    /**  public void hoodAdjustmentCoverIt(boolean decreaseAngle) {
