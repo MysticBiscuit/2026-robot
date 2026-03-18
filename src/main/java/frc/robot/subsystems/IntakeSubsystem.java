@@ -97,7 +97,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public void intakeTime(boolean suckIt) {
         if(suckIt) {
-            m_intakeMotor.set(-1);
+            m_intakeMotor.set(-1.2);
         }else {
             m_intakeMotor.set(0);
         }
