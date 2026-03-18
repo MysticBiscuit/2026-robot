@@ -103,7 +103,7 @@ public class RobotContainer {
 
 private Command getMoveForward(TrajectoryConfig config) {
 
-  return regenerateTrajectoryCommand(config, 0.0, 1.0, 0.0);
+  return regenerateTrajectoryCommand(config, 0, 1, 0);
 }
 
 private Command getShootPosition() {
@@ -141,7 +141,7 @@ private Command getShoot() {
 
 private Command getDriveToLadder(TrajectoryConfig config) {
 
-  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(0, 1, new Rotation2d(0)), List.of(), config);
+  return regenerateTrajectoryCommand(config, 0, 1, 0);
 }
 
 private Command getClimb() {
@@ -151,7 +151,7 @@ private Command getClimb() {
 }
 
 private Command getMoveToFixedShootPoint(TrajectoryConfig config) {
-  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(1, -2.01, new Rotation2d(180)), List.of(), config);
+  return regenerateTrajectoryCommand(config, -1, -2.01, 180);
 }
 
 private Command getPutArmDown() {
@@ -161,11 +161,11 @@ private Command getPutArmDown() {
 }
 
 private Command getMoveToNeutral(TrajectoryConfig config) {
-  return generateTrajectoryCommand(new Pose2d(0,0, new Rotation2d(0)), new Pose2d(-3, -2.01, new Rotation2d(0)), List.of(), config);
+  return regenerateTrajectoryCommand(config, -3, -2.01, 180);
 }
 
 private Command getBackTrajectory(TrajectoryConfig config) {
-  return generateTrajectoryCommand(new Pose2d(5, 5, new Rotation2d(0)), new Pose2d(4, 5, new Rotation2d(0)), List.of(), config);
+  return regenerateTrajectoryCommand(config, -1, 0, 0);
 }
 
   /**
