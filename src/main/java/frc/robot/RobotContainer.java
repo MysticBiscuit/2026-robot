@@ -165,7 +165,7 @@ private Command getMoveToNeutral(TrajectoryConfig config) {
 }
 
 private Command getBackTrajectory(TrajectoryConfig config) {
-  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(-0, 0, new Rotation2d(0)), List.of(), config);
+  return generateTrajectoryCommand(new Pose2d(5, 5, new Rotation2d(0)), new Pose2d(4, 5, new Rotation2d(0)), List.of(), config);
 }
 
   /**
