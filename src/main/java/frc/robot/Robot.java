@@ -30,10 +30,6 @@ public class Robot extends TimedRobot {
   private final Pigeon2 m_gyro = new Pigeon2(Constants.DriveConstants.kGyroID);
 
   private void onInits() {
-    if (m_robotContainer != null) {
-      m_robotDrive.drive(0, 0, 0, false);
-    }
-
     m_gyro.reset();
   }
 

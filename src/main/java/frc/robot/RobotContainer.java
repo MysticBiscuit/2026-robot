@@ -165,7 +165,7 @@ private Command getMoveToNeutral(TrajectoryConfig config) {
 }
 
 private Command getBackTrajectory(TrajectoryConfig config) {
-  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(-1, 0, new Rotation2d(0)), List.of(), config);
+  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(-0, 0, new Rotation2d(0)), List.of(), config);
 }
 
   /**
@@ -219,6 +219,9 @@ private Command getBackTrajectory(TrajectoryConfig config) {
         .andThen(getShoot())
         .andThen(Commands.runOnce(
           () -> m_intake.stopShooter(true)));
+
+      } else if (choices [0].matches("MODULAR TEST")) {
+        autoCommand = getBackTrajectory(config);
 
       } else {
         return Commands.none();
