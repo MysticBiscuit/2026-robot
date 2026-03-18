@@ -7,7 +7,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
-// import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,7 +24,7 @@ public class IntakeSubsystem extends SubsystemBase{
     private DigitalInput m_lowerLimit;
     private DigitalInput m_upperLimit;
 
-    // private final Timer m_systemTimer = new Timer();
+    public final Timer m_systemTimer = new Timer();
     private boolean m_boxExtendRequested = false;
     private boolean m_boxRetractRequested = false;
     //private SparkAbsoluteEncoder armExtenderPosition = m_armExtenderOne.getAbsoluteEncoder();
@@ -116,18 +116,41 @@ public class IntakeSubsystem extends SubsystemBase{
         }
     }
 
-    public void shoot(double speed) {
-        m_shooterOne.set(speed);
-        m_shooterTwo.set(-speed);
+    public void shoot(double speed, Timer timer) {
+        timer.reset();
+        m_shooter.set(-speed);
+
+        if (timer.get() >= 3) {
+            m_shooterIndexer.set(speed - 0.05);
+        }
     }
 
-    public void hoodAdjustmentCoverIt(boolean decreaseAngle) {
+    public void stopShooter(boolean stop) {
+        if (stop) {
+            m_shooter.set(0);
+            m_shooterIndexer.set(0);
+        }
+    }
+
+    public void intakeArmDown(double speed) {
+        m_armExtenderOne.set(speed);
+        m_armExtenderTwo.set(-speed);
+    }
+
+    public void intakeStop(boolean stop) {
+       if (stop) {
+        m_armExtenderOne.set(0);
+        m_armExtenderTwo.set(0);
+       }
+    }
+
+   /**  public void hoodAdjustmentCoverIt(boolean decreaseAngle) {
         if (decreaseAngle) {
             m_hood.set(0.1);
         } else {
             m_hood.set(0);
         }
-    }
+    } 
 
     public void hoodAdjustmentOpenIt(boolean increaseAngle) {
         if (increaseAngle) {
@@ -135,7 +158,7 @@ public class IntakeSubsystem extends SubsystemBase{
         } else {
             m_hood.set(0);
         }
-    }
+    }*/
 
     public void updateWithControls(boolean armKillSwitch) {
         m_armKillSwitch = armKillSwitch;

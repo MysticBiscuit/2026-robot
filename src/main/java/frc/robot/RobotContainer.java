@@ -135,8 +135,8 @@ private Command getShootPosition() {
 
 private Command getShoot() {
   return new RunCommand(
-    () -> m_intake.shoot(1)
-  ).withTimeout(3);
+    () -> m_intake.shoot(0.8, m_intake.m_systemTimer)
+  ).withTimeout(7);
 }
 
 private Command getDriveToLadder(TrajectoryConfig config) {
@@ -150,8 +150,19 @@ private Command getClimb() {
   );
 }
 
+private Command getMoveToFixedShootPoint(TrajectoryConfig config) {
+  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(1, -2.01, new Rotation2d(180)), null, config);
+}
 
+private Command getPutArmDown() {
+  return new RunCommand(
+    () -> m_intake.intakeArmDown(0.2)
+  ).withTimeout(3);
+}
 
+private Command getMoveToNeutral(TrajectoryConfig config) {
+  return generateTrajectoryCommand(new Pose2d(0,0, new Rotation2d(0)), new Pose2d(-3, -2.01, new Rotation2d(0)), null, config);
+}
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -183,6 +194,19 @@ private Command getClimb() {
         .andThen(getDriveToLadder(config))
         .andThen(getClimb());
 
+      } else if (choices[0] == "AUTO 3"){
+        autoCommand = getMoveToFixedShootPoint(config)
+        .andThen(getShoot())
+        .andThen(Commands.runOnce(
+         () -> m_intake.stopShooter(true))
+        );
+        
+      } else if (choices [0] == "AUTO 4") {
+        autoCommand = getPutArmDown()
+        .andThen(Commands.runOnce(
+          () -> m_intake.intakeStop(true)))
+        .andThen(getMoveToNeutral(config));
+      
       } else {
         return Commands.none();
     }
