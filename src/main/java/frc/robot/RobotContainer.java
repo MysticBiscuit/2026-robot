@@ -157,7 +157,7 @@ private Command getMoveToFixedShootPoint(TrajectoryConfig config) {
 private Command getPutArmDown() {
   return new RunCommand(
     () -> m_intake.intakeArmDown(0.2)
-  ).withTimeout(1);
+  ).withTimeout(3);
 }
 
 private Command getMoveToNeutral(TrajectoryConfig config) {
@@ -221,9 +221,9 @@ private Command getBackTrajectory(TrajectoryConfig config) {
           () -> m_intake.stopShooter(true)));
 
       } else if (choices[0].matches("MODULAR TEST")) {
-        autoCommand = getPutArmDown()
+        autoCommand = getShoot()
         .andThen(Commands.runOnce(
-          () -> m_intake.intakeStop(true)));
+          () -> m_intake.stopShooter(true)));;
 
       } else {
         return Commands.none();
