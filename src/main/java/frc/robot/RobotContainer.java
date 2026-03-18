@@ -103,7 +103,7 @@ public class RobotContainer {
 
 private Command getMoveForward(TrajectoryConfig config) {
 
-  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(0, 1, new Rotation2d(0)), List.of(), config);
+  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(0, -1, new Rotation2d(0)), List.of(), config);
 }
 
 private Command getShootPosition() {
@@ -205,13 +205,13 @@ private Command getBackTrajectory(TrajectoryConfig config) {
          () -> m_intake.stopShooter(true))
         );
         
-      } else if (choices [0].matches("AUTO 4")) {
+      } else if (choices[0].matches("AUTO 4")) {
         autoCommand = getPutArmDown()
         .andThen(Commands.runOnce(
           () -> m_intake.intakeStop(true)))
         .andThen(getMoveToNeutral(config));
       
-      } else if (choices [0].matches("AUTO 5")) {
+      } else if (choices[0].matches("AUTO 5")) {
         autoCommand = getBackTrajectory(config)
         .andThen(getPutArmDown())
         .andThen(Commands.runOnce(
@@ -220,7 +220,7 @@ private Command getBackTrajectory(TrajectoryConfig config) {
         .andThen(Commands.runOnce(
           () -> m_intake.stopShooter(true)));
 
-      } else if (choices [0].matches("MODULAR TEST")) {
+      } else if (choices[0].matches("MODULAR TEST")) {
         autoCommand = getBackTrajectory(config);
 
       } else {
