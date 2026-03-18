@@ -29,12 +29,24 @@ public class OrientationSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         double omegaRps = Units.degreesToRotations(m_robotDrive.getTurnRate());
+        var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+
+        if (llMeasurement != null && getSpecialTV() && Math.abs(omegaRps) < 2.0) {
+            m_robotDrive.resetOdometry(llMeasurement.pose);
+        }
 
         if (!DriverStation.isAutonomous()) {
             scoringModeActive(m_scoringModeOn, m_scoringModeEnd);
         }
     }
 
+    private boolean getSpecialTV() {
+        LimelightHelpers.SetFiducialIDFiltersOverride("", new int[]{10, 26});
+        boolean hasTarget = LimelightHelpers.getTV("");
+
+        return hasTarget;
+    }
+    
     private void scoringModeActive(boolean scoringModeOn, boolean scoringModeEnd) {
 
     }
