@@ -121,6 +121,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public void shoot(double speed, Timer timer) {
         timer.reset();
+        timer.start();
         m_shooter.set(-speed);
 
         if (timer.get() >= 3) {

@@ -20,6 +20,7 @@ public class Coms {
         m_autoChooser.addOption("AUTO 3", "AUTO 3");
         m_autoChooser.addOption("AUTO 4", "AUTO 4");
         m_autoChooser.addOption("AUTO 5", "AUTO 5");
+        m_autoChooser.addOption("MODULAR TEST", "MODULAR TEST");
         SmartDashboard.putData("AUTO_SELECT", m_autoChooser);
 
     }
