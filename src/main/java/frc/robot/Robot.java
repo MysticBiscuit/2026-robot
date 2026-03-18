@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Coms;
-
+import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj.Timer;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -25,7 +25,17 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  private DriveSubsystem m_robotDrive;
+
   private final Pigeon2 m_gyro = new Pigeon2(Constants.DriveConstants.kGyroID);
+
+  private void onInits() {
+    if (m_robotContainer != null) {
+      m_robotDrive.drive(0, 0, 0, false);
+    }
+
+    m_gyro.reset();
+  }
 
 
   /**
@@ -66,9 +76,8 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_systemTimer.reset();
-    m_systemTimer.start();
-    
+    onInits();
+
     m_robotContainer.getAutonomousCommand();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -97,7 +106,6 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
-      m_gyro.reset();
     }
   }
 

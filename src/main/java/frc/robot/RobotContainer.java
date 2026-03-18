@@ -141,7 +141,7 @@ private Command getShoot() {
 
 private Command getDriveToLadder(TrajectoryConfig config) {
 
-  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(0, 1, new Rotation2d(0)), null, config);
+  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(0, 1, new Rotation2d(0)), List.of(), config);
 }
 
 private Command getClimb() {
@@ -151,17 +151,21 @@ private Command getClimb() {
 }
 
 private Command getMoveToFixedShootPoint(TrajectoryConfig config) {
-  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(1, -2.01, new Rotation2d(180)), null, config);
+  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(1, -2.01, new Rotation2d(180)), List.of(), config);
 }
 
 private Command getPutArmDown() {
   return new RunCommand(
     () -> m_intake.intakeArmDown(0.2)
-  ).withTimeout(3);
+  ).withTimeout(1);
 }
 
 private Command getMoveToNeutral(TrajectoryConfig config) {
-  return generateTrajectoryCommand(new Pose2d(0,0, new Rotation2d(0)), new Pose2d(-3, -2.01, new Rotation2d(0)), null, config);
+  return generateTrajectoryCommand(new Pose2d(0,0, new Rotation2d(0)), new Pose2d(-3, -2.01, new Rotation2d(0)), List.of(), config);
+}
+
+private Command getBackTrajectory(TrajectoryConfig config) {
+  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(-1, 0, new Rotation2d(0)), List.of(), config);
 }
 
   /**
@@ -207,6 +211,15 @@ private Command getMoveToNeutral(TrajectoryConfig config) {
           () -> m_intake.intakeStop(true)))
         .andThen(getMoveToNeutral(config));
       
+      } else if (choices [0].matches("AUTO 5")) {
+        autoCommand = getBackTrajectory(config)
+        .andThen(getPutArmDown())
+        .andThen(Commands.runOnce(
+          () -> m_intake.intakeStop(true)))
+        .andThen(getShoot())
+        .andThen(Commands.runOnce(
+          () -> m_intake.stopShooter(true)));
+
       } else {
         return Commands.none();
     }
