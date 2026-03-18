@@ -159,10 +159,10 @@ public class ElevatorSubsystem extends SubsystemBase{
 
    public void elevatorSlideCommand(boolean elevatorSlideOutRequested, boolean elevatorSlideInRequested) {
       if (elevatorSlideOutRequested && m_elevatorSliderBackLimit.get()) {
-         m_elevatorSlider.set(0.25);
+         m_elevatorSlider.set(0.5);
 
       } else if (elevatorSlideInRequested && m_elevatorSliderFrontLimit.get()) {
-         m_elevatorSlider.set(-0.25);
+         m_elevatorSlider.set(-0.5);
       } else {
          m_elevatorSlider.set(0);
       }
