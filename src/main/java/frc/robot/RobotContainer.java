@@ -221,7 +221,9 @@ private Command getBackTrajectory(TrajectoryConfig config) {
           () -> m_intake.stopShooter(true)));
 
       } else if (choices[0].matches("MODULAR TEST")) {
-        autoCommand = getBackTrajectory(config);
+        autoCommand = getPutArmDown()
+        .andThen(Commands.runOnce(
+          () -> m_intake.intakeStop(true)));
 
       } else {
         return Commands.none();
