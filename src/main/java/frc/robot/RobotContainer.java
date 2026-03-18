@@ -103,7 +103,7 @@ public class RobotContainer {
 
 private Command getMoveForward(TrajectoryConfig config) {
 
-  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(0, -1, new Rotation2d(0)), List.of(), config);
+  return regenerateTrajectoryCommand(config, 0.0, 1.0, 0.0);
 }
 
 private Command getShootPosition() {
@@ -272,5 +272,38 @@ private Command generateTrajectoryCommand(Pose2d start, Pose2d end, List<Transla
         () -> m_robotDrive.drive(0, 0, 0, false)
       )
     );
+  }
+
+  private Command regenerateTrajectoryCommand(TrajectoryConfig config, double xEnd, double yEnd, double rotEnd) {
+    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(0, 0, new Rotation2d(0)),
+        // Pass through these two interior waypoints, making an 's' curve path
+        List.of(),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(xEnd, yEnd, new Rotation2d(rotEnd)),
+        config);
+
+    var thetaController = new ProfiledPIDController(
+        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+        exampleTrajectory,
+        m_robotDrive::getPose, // Functional interface to feed supplier
+        DriveConstants.kDriveKinematics,
+
+        // Position controllers
+        new PIDController(AutoConstants.kPXController, 0, 0),
+        new PIDController(AutoConstants.kPYController, 0, 0),
+        thetaController,
+        m_robotDrive::setModuleStates,
+        m_robotDrive);
+
+    // Reset odometry to the starting pose of the trajectory.
+    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+
+    // Run path following command, then stop at the end.
+    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
   }
 }
