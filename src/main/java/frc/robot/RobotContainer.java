@@ -185,7 +185,11 @@ private Command getMoveToNeutral(TrajectoryConfig config) {
     Command autoCommand = Commands.none();
 
     if (choices[0].matches("AUTO 1") ){
-        autoCommand = getMoveForward(config);
+        return generateTrajectoryCommand(
+        new Pose2d(0, 0, new Rotation2d()), 
+        new Pose2d(0, 1, new Rotation2d()), 
+        List.of(), 
+        config);
 
       } else if (choices[0].matches("AUTO 2")){
         autoCommand = getMoveForward(config)
