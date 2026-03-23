@@ -79,9 +79,9 @@ public class IntakeSubsystem extends SubsystemBase{
             m_armExtenderOne.set(-0.18);
             m_armExtenderTwo.set(0.18);
         } else if (retractBox && m_upperLimit.get()) {
-            m_armExtenderOne.set(0.1);
-            m_armExtenderTwo.set(-0.1);
-        } else {
+            m_armExtenderOne.set(0.3);
+            m_armExtenderTwo.set(-0.3);
+        } else if (DriverStation.isTeleop()) {
             m_armExtenderOne.set(0);
             m_armExtenderTwo.set(0);
         }
@@ -97,16 +97,16 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public void intakeTime(boolean suckIt) {
         if(suckIt) {
-            m_intakeMotor.set(-1.2);
-        }else {
+            m_intakeMotor.set(-1);
+        }else if (DriverStation.isTeleop()) {
             m_intakeMotor.set(0);
         }
     }
 
     public void shootingTime(boolean shootIt) {
         if(shootIt) {
-            m_shooter.set(-0.8);
-        } else {
+            m_shooter.set(-0.7);
+        } else if (DriverStation.isTeleop()) {
             m_shooter.set(0);
         }
     }
@@ -114,7 +114,7 @@ public class IntakeSubsystem extends SubsystemBase{
     public void indexIt(boolean indexIt) {
         if(indexIt) {
             m_shooterIndexer.set(0.65);
-        } else {
+        } else if (DriverStation.isTeleop()) {
             m_shooterIndexer.set(0);
         }
     }
