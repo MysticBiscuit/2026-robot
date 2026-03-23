@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.fasterxml.jackson.databind.ser.std.InetSocketAddressSerializer;
 // import com.revrobotics.AbsoluteEncoder;
 // import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
@@ -22,6 +24,8 @@ public class IntakeSubsystem extends SubsystemBase{
 
     private DigitalInput m_lowerLimit;
     private DigitalInput m_upperLimit;
+
+    private final Pigeon2 m_gyro = new Pigeon2(Constants.DriveConstants.kGyroID);
 
     public final Timer m_systemTimer = new Timer();
     private boolean m_boxExtendRequested = false;
@@ -72,8 +76,8 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public void boxControls(boolean extendBox, boolean retractBox) {
         if(extendBox && m_lowerLimit.get()) {
-            m_armExtenderOne.set(-0.1);
-            m_armExtenderTwo.set(0.1);
+            m_armExtenderOne.set(-0.18);
+            m_armExtenderTwo.set(0.18);
         } else if (retractBox && m_upperLimit.get()) {
             m_armExtenderOne.set(0.3);
             m_armExtenderTwo.set(-0.3);
@@ -117,6 +121,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public void shoot(double speed, Timer timer) {
         timer.reset();
+        timer.start();
         m_shooter.set(-speed);
 
         if (timer.get() >= 3) {
@@ -141,6 +146,12 @@ public class IntakeSubsystem extends SubsystemBase{
         m_armExtenderOne.set(0);
         m_armExtenderTwo.set(0);
        }
+    }
+
+    public void zeroIt(boolean zero) {
+        if (zero) {
+            m_gyro.reset();
+        }
     }
 
    /**  public void hoodAdjustmentCoverIt(boolean decreaseAngle) {

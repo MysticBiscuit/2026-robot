@@ -95,7 +95,7 @@ public class RobotContainer {
 
 private Command getMoveForward(TrajectoryConfig config) {
 
-  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(0, 1, new Rotation2d(0)), null, config);
+  return regenerateTrajectoryCommand(config, 0, 1, 0);
 }
 
 private Command getShootPosition() {
@@ -133,7 +133,7 @@ private Command getShoot() {
 
 private Command getDriveToLadder(TrajectoryConfig config) {
 
-  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(0, 1, new Rotation2d(0)), null, config);
+  return regenerateTrajectoryCommand(config, 0, 1, 0);
 }
 
 private Command getClimb() {
@@ -143,7 +143,7 @@ private Command getClimb() {
 }
 
 private Command getMoveToFixedShootPoint(TrajectoryConfig config) {
-  return generateTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(1, -2.01, new Rotation2d(180)), null, config);
+  return regenerateTrajectoryCommand(config, -1, -2.01, 180);
 }
 
 private Command getPutArmDown() {
@@ -153,7 +153,11 @@ private Command getPutArmDown() {
 }
 
 private Command getMoveToNeutral(TrajectoryConfig config) {
-  return generateTrajectoryCommand(new Pose2d(0,0, new Rotation2d(0)), new Pose2d(-3, -2.01, new Rotation2d(0)), null, config);
+  return regenerateTrajectoryCommand(config, -3, -2.01, 180);
+}
+
+private Command getBackTrajectory(TrajectoryConfig config) {
+  return regenerateTrajectoryCommand(config, -1, 0, 0);
 }
 
   /**
@@ -176,29 +180,43 @@ private Command getMoveToNeutral(TrajectoryConfig config) {
     
     Command autoCommand = Commands.none();
 
-    if (choices[0] == "AUTO 1"){
+    if (choices[0].matches("AUTO 1") ){
         autoCommand = getMoveForward(config);
 
-      } else if (choices[0] == "AUTO 2"){
+      } else if (choices[0].matches("AUTO 2")){
         autoCommand = getMoveForward(config)
         .andThen(getShootPosition())
         .andThen(getShoot())
         .andThen(getDriveToLadder(config))
         .andThen(getClimb());
 
-      } else if (choices[0] == "AUTO 3"){
+      } else if (choices[0].matches("AUTO 3")){
         autoCommand = getMoveToFixedShootPoint(config)
         .andThen(getShoot())
         .andThen(Commands.runOnce(
          () -> m_intake.stopShooter(true))
         );
         
-      } else if (choices [0] == "AUTO 4") {
+      } else if (choices[0].matches("AUTO 4")) {
         autoCommand = getPutArmDown()
         .andThen(Commands.runOnce(
           () -> m_intake.intakeStop(true)))
         .andThen(getMoveToNeutral(config));
       
+      } else if (choices[0].matches("AUTO 5")) {
+        autoCommand = getBackTrajectory(config)
+        .andThen(getPutArmDown())
+        .andThen(Commands.runOnce(
+          () -> m_intake.intakeStop(true)))
+        .andThen(getShoot())
+        .andThen(Commands.runOnce(
+          () -> m_intake.stopShooter(true)));
+
+      } else if (choices[0].matches("MODULAR TEST")) {
+        autoCommand = getShoot()
+        .andThen(Commands.runOnce(
+          () -> m_intake.stopShooter(true)));;
+
       } else {
         return Commands.none();
     }
@@ -248,5 +266,38 @@ private Command generateTrajectoryCommand(Pose2d start, Pose2d end, List<Transla
         () -> m_robotDrive.drive(0, 0, 0, false)
       )
     );
+  }
+
+  private Command regenerateTrajectoryCommand(TrajectoryConfig config, double xEnd, double yEnd, double rotEnd) {
+    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(0, 0, new Rotation2d(0)),
+        // Pass through these two interior waypoints, making an 's' curve path
+        List.of(),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(xEnd, yEnd, new Rotation2d(rotEnd)),
+        config);
+
+    var thetaController = new ProfiledPIDController(
+        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+        exampleTrajectory,
+        m_robotDrive::getPose, // Functional interface to feed supplier
+        DriveConstants.kDriveKinematics,
+
+        // Position controllers
+        new PIDController(AutoConstants.kPXController, 0, 0),
+        new PIDController(AutoConstants.kPYController, 0, 0),
+        thetaController,
+        m_robotDrive::setModuleStates,
+        m_robotDrive);
+
+    // Reset odometry to the starting pose of the trajectory.
+    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+
+    // Run path following command, then stop at the end.
+    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
   }
 }

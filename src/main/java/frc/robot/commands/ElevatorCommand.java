@@ -24,7 +24,7 @@ public class ElevatorCommand extends Command{
         m_elevator.elevatorSlideCommand(m_controller.getBButton(), m_controller.getXButton());
         m_elevator.elevatorManualControls(m_controller.getAButton(), m_controller.getYButton());
 
-        if (m_controller.getPOV() == 0) {
+        if (m_controller.getPOV() == 180) {
             Constants.DriveConstants.slowDownModifier = 0.5;
         } else {
             Constants.DriveConstants.slowDownModifier = 1;

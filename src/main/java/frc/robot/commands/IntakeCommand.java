@@ -20,5 +20,6 @@ public class IntakeCommand extends Command {
         m_intake.intakeTime(m_Controller.getLeftTriggerAxis() > 0.8);
         m_intake.boxControls(m_Controller.getPOV() == 270, m_Controller.getRightBumperButton());
         m_intake.indexIt(m_Controller.getLeftBumperButton());
+        m_intake.zeroIt(m_Controller.getPOV() == 0);
         
 }}
