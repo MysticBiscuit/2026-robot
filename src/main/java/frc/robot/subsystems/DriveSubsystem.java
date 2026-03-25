@@ -20,6 +20,8 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
@@ -45,6 +47,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   // The gyro sensor
   private final Pigeon2 m_gyro = new Pigeon2(Constants.DriveConstants.kGyroID);
+
+  private final Field2d field2d = new Field2d();
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -74,6 +78,9 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+
+    field2d.setRobotPose(m_odometry.getPoseMeters());
+    SmartDashboard.putData(field2d);
   }
 
   /**

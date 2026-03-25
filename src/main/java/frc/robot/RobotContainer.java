@@ -68,16 +68,16 @@ public class RobotContainer {
     // Configure default commands
     m_elevator.setDefaultCommand(new ElevatorCommand(m_elevator, m_driverController));
     m_intake.setDefaultCommand(new IntakeCommand(m_intake, m_driverController));
-    m_robotDrive.setDefaultCommand(
+    m_robotDrive.setDefaultCommand(new DriveCommand(m_driveCommand, m_driverController));
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
+        /**new RunCommand(
             () -> m_robotDrive.drive(
                 -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true),
-            m_robotDrive));
+            m_robotDrive));*/
   }
 
   /**

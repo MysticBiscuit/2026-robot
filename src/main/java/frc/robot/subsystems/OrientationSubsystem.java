@@ -19,6 +19,9 @@ public class OrientationSubsystem extends SubsystemBase{
 
     private boolean m_scoringModeOn = false;
     private boolean m_scoringModeEnd = false;
+    public double m_driveXSpeed;
+    public double m_driveYSpeed;
+    public double m_driveRotation;
 
     private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
@@ -36,7 +39,7 @@ public class OrientationSubsystem extends SubsystemBase{
         }
 
         if (!DriverStation.isAutonomous()) {
-            scoringModeActive(m_scoringModeOn, m_scoringModeEnd);
+            scoringModeActive(m_scoringModeOn, m_scoringModeEnd, m_driveXSpeed, m_driveYSpeed, m_driveRotation);
         }
     }
 
@@ -47,8 +50,10 @@ public class OrientationSubsystem extends SubsystemBase{
         return hasTarget;
     }
     
-    private void scoringModeActive(boolean scoringModeOn, boolean scoringModeEnd) {
-
+    private void scoringModeActive(boolean scoringModeOn, boolean scoringModeEnd, double driveXSpeed, double driveYSpeed, double driveRotation) {
+        if (scoringModeOn) {
+            driveXSpeed = 
+        }
     }
 
     public void updateWithControls(boolean scoringModeOn, boolean scoringModeEnd) {
