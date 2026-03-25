@@ -32,7 +32,6 @@ public class Robot extends TimedRobot {
   private final Pigeon2 m_gyro = new Pigeon2(Constants.DriveConstants.kGyroID);
 
   private void onInits() {
-    m_gyro.reset();
   }
 
 
@@ -107,6 +106,8 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+     m_gyro.reset();
+
     }
   }
 
