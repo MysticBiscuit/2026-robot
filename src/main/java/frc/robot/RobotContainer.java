@@ -262,9 +262,7 @@ private Command getBackTrajectory() {
           () -> m_intake.stopShooter(true)));
 
       } else if (choices[0].matches("MODULAR TEST")) {
-        autoCommand = getShoot()
-        .andThen(Commands.runOnce(
-          () -> m_intake.stopShooter(true)));;
+        autoCommand = getBackTrajectory();
 
       } else {
         return Commands.none();
