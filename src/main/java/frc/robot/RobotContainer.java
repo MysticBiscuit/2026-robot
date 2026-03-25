@@ -34,11 +34,9 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.ElevatorCommand;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LimelightHelpers;
+import frc.robot.subsystems.OrientationSubsystem;
+import frc.robot.commands.DriveCommand;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -47,13 +45,15 @@ import frc.robot.subsystems.LimelightHelpers;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+    // The driver's controller
+  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final IntakeSubsystem m_intake = new IntakeSubsystem();
   private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
-
-  // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  private final OrientationSubsystem m_orientation = new OrientationSubsystem(m_driverController);
+  private final DriveCommand m_driveCommand = new DriveCommand(m_robotDrive, m_orientation, m_driverController);
 
   public Trajectory currentTrajectory;
 
@@ -68,7 +68,8 @@ public class RobotContainer {
     // Configure default commands
     m_elevator.setDefaultCommand(new ElevatorCommand(m_elevator, m_driverController));
     m_intake.setDefaultCommand(new IntakeCommand(m_intake, m_driverController));
-    m_robotDrive.setDefaultCommand(new DriveCommand(m_driveCommand, m_driverController));
+    m_robotDrive.setDefaultCommand(m_driveCommand);
+    m_orientation.setDefaultCommand(m_driveCommand);
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         /**new RunCommand(
