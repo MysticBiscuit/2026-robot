@@ -9,6 +9,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
+import com.pathplanner.lib.config.RobotConfig;
+import edu.wpi.first.wpilibj.DataLogManager;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -78,6 +81,18 @@ public final class Constants {
 
 
     public static final boolean kGyroReversed = false;
+
+    public static final RobotConfig config;
+    static {
+      RobotConfig specialConfig = null;
+      try{
+        specialConfig = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
+    config = specialConfig;
+    }
   }
 
   public static final class ModuleConstants {

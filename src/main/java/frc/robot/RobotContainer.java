@@ -34,6 +34,10 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -93,9 +97,18 @@ public class RobotContainer {
     
   }
 
-private Command getMoveForward(TrajectoryConfig config) {
+private Command getMoveForward() {
 
-  return regenerateTrajectoryCommand(config, 0, 1, 0);
+  try{
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Move Forward");
+
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }
 }
 
 private Command getShootPosition() {
@@ -131,9 +144,18 @@ private Command getShoot() {
   ).withTimeout(7);
 }
 
-private Command getDriveToLadder(TrajectoryConfig config) {
+private Command getDriveToLadder() {
 
-  return regenerateTrajectoryCommand(config, 0, 1, 0);
+  try{
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Drive to Ladder");
+
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }
 }
 
 private Command getClimb() {
@@ -142,8 +164,17 @@ private Command getClimb() {
   );
 }
 
-private Command getMoveToFixedShootPoint(TrajectoryConfig config) {
-  return regenerateTrajectoryCommand(config, -1, -2.01, 180);
+private Command getMoveToFixedShootPoint() {
+  try{
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Move Back");
+
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }
 }
 
 private Command getPutArmDown() {
@@ -152,12 +183,30 @@ private Command getPutArmDown() {
   ).withTimeout(3);
 }
 
-private Command getMoveToNeutral(TrajectoryConfig config) {
-  return regenerateTrajectoryCommand(config, -3, -2.01, 180);
+private Command getMoveToNeutral() {
+  try{
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Move to Neutral");
+
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }
 }
 
-private Command getBackTrajectory(TrajectoryConfig config) {
-  return regenerateTrajectoryCommand(config, -1, 0, 0);
+private Command getBackTrajectory() {
+  try{
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Move Back");
+
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }
 }
 
   /**
@@ -167,13 +216,13 @@ private Command getBackTrajectory(TrajectoryConfig config) {
    */
   public Command getAutonomousCommand() {
     // Create a voltage constraint to ensure we don't accelerate too fast
-    TrajectoryConfig config = new TrajectoryConfig(
+    /**TrajectoryConfig config = new TrajectoryConfig(
       AutoConstants.kMaxSpeedMetersPerSecond,
       AutoConstants.kMaxAccelerationMetersPerSecondSquared
     )
     .setKinematics(DriveConstants.kDriveKinematics)
     .setStartVelocity(0)
-    .setEndVelocity(0);
+    .setEndVelocity(0);*/
 
     //actual auto command/diff autos based on selection
      String[] choices = Coms.getAutoChoices();
@@ -181,17 +230,17 @@ private Command getBackTrajectory(TrajectoryConfig config) {
     Command autoCommand = Commands.none();
 
     if (choices[0].matches("AUTO 1") ){
-        autoCommand = getMoveForward(config);
+        autoCommand = getMoveForward();
 
       } else if (choices[0].matches("AUTO 2")){
-        autoCommand = getMoveForward(config)
+        autoCommand = getMoveForward()
         .andThen(getShootPosition())
         .andThen(getShoot())
-        .andThen(getDriveToLadder(config))
+        .andThen(getDriveToLadder())
         .andThen(getClimb());
 
       } else if (choices[0].matches("AUTO 3")){
-        autoCommand = getMoveToFixedShootPoint(config)
+        autoCommand = getMoveToFixedShootPoint()
         .andThen(getShoot())
         .andThen(Commands.runOnce(
          () -> m_intake.stopShooter(true))
@@ -201,10 +250,10 @@ private Command getBackTrajectory(TrajectoryConfig config) {
         autoCommand = getPutArmDown()
         .andThen(Commands.runOnce(
           () -> m_intake.intakeStop(true)))
-        .andThen(getMoveToNeutral(config));
+        .andThen(getMoveToNeutral());
       
       } else if (choices[0].matches("AUTO 5")) {
-        autoCommand = getBackTrajectory(config)
+        autoCommand = getBackTrajectory()
         .andThen(getPutArmDown())
         .andThen(Commands.runOnce(
           () -> m_intake.intakeStop(true)))
@@ -213,9 +262,9 @@ private Command getBackTrajectory(TrajectoryConfig config) {
           () -> m_intake.stopShooter(true)));
 
       } else if (choices[0].matches("MODULAR TEST")) {
-        autoCommand = getShoot()
+        autoCommand = getPutArmDown()
         .andThen(Commands.runOnce(
-          () -> m_intake.stopShooter(true)));;
+          () -> m_intake.intakeStop(true)));
 
       } else {
         return Commands.none();
@@ -232,7 +281,7 @@ private Command getBackTrajectory(TrajectoryConfig config) {
     return m_intake;
 }
 
-private Command generateTrajectoryCommand(Pose2d start, Pose2d end, List<Translation2d> waypoints, TrajectoryConfig config) {
+/**private Command generateTrajectoryCommand(Pose2d start, Pose2d end, List<Translation2d> waypoints, TrajectoryConfig config) {
     currentTrajectory = TrajectoryGenerator.generateTrajectory(
         start,
         waypoints,
@@ -299,5 +348,5 @@ private Command generateTrajectoryCommand(Pose2d start, Pose2d end, List<Transla
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-  }
+  }*/
 }
