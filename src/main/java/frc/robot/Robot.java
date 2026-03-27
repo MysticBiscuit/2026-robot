@@ -77,6 +77,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     onInits();
+    m_gyro.reset();
 
     m_robotContainer.getAutonomousCommand();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
