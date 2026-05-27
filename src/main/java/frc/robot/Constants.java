@@ -9,6 +9,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
+import com.pathplanner.lib.config.RobotConfig;
+import edu.wpi.first.wpilibj.DataLogManager;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -23,6 +26,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static final class DriveConstants {
+    public static double slowDownModifier;
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
     public static final double kMaxSpeedMetersPerSecond = 4.8;
@@ -60,10 +64,11 @@ public final class Constants {
     public static final int kIntakeExtenderTwoCanId = 10;
     public static final int kIntakeHoodCanId = 11;
     public static final int kIntakeMechanismCanId = 12;
-    public static final int kBallConductorOneCanId = 13;
-    public static final int kShooterOneCanId = 14;
-    public static final int kShooterTwoCanId = 15;
-    public static final int kClimberCanId = 16;
+    public static final int kShooterIndexerCanId = 13;
+    public static final int kShooterCanId = 14;
+    public static final int kClimberCanId = 15;
+    public static final int kSliderCanId = 16;
+
 
     public static final int kGyroID = 0;
 
@@ -71,11 +76,23 @@ public final class Constants {
     public static final int dUpperLimitSwitchPort = 1;
     public static final int dTopElevatorLimitSwitchPort = 2;
     public static final int dBottomElevatorLimitSwitchPort = 3;
-
-    public static final int sElevatorSliderPort = 4;
+    public static final int dFrontElevatorSliderLimitSwitchPort = 4;
+    public static final int dBackElevatorSliderLimitSwitchPort = 5;
 
 
     public static final boolean kGyroReversed = false;
+
+    public static final RobotConfig config;
+    static {
+      RobotConfig specialConfig = null;
+      try{
+        specialConfig = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
+    config = specialConfig;
+    }
   }
 
   public static final class ModuleConstants {
@@ -97,7 +114,7 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
-    public static final double kDriveDeadband = 0.05;
+    public static final double kDriveDeadband = 0.10;
   }
 
   public static final class AutoConstants {

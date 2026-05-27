@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
@@ -21,12 +22,13 @@ public class ElevatorSubsystem extends SubsystemBase{
    private final DigitalInput m_elevatorTopLimit;
    private final DigitalInput m_elevatorBottomLimit;
 
-   private final Servo m_elevatorSlider;
+   private final SparkMax m_elevatorSlider;
+
+   private final DigitalInput m_elevatorSliderFrontLimit;
+   private final DigitalInput m_elevatorSliderBackLimit;
 
    private boolean m_fullClimbRequested = false;
    private boolean m_autoClimbRequested = false;
-   private boolean m_elevatorSlideOutRequested = false;
-   private boolean m_elevatorSlideInRequested = false;
 
    public ElevatorSubsystem() {
     m_climber = new SparkMax(Constants.DriveConstants.kClimberCanId, MotorType.kBrushless);
@@ -34,42 +36,157 @@ public class ElevatorSubsystem extends SubsystemBase{
     m_elevatorTopLimit = new DigitalInput(Constants.DriveConstants.dTopElevatorLimitSwitchPort);
     m_elevatorBottomLimit = new DigitalInput(Constants.DriveConstants.dBottomElevatorLimitSwitchPort);
 
-    m_elevatorSlider = new Servo(Constants.DriveConstants.sElevatorSliderPort);
+    m_elevatorSlider = new SparkMax(Constants.DriveConstants.kSliderCanId, MotorType.kBrushless);
+
+    m_elevatorSliderFrontLimit = new DigitalInput(Constants.DriveConstants.dFrontElevatorSliderLimitSwitchPort);
+    m_elevatorSliderBackLimit = new DigitalInput(Constants.DriveConstants.dBackElevatorSliderLimitSwitchPort);
    }
 
    @Override
    public void periodic() {
     if (!DriverStation.isAutonomous()){
-        fullClimbCommand(m_fullClimbRequested);
-        elevatorSlideCommand(m_elevatorSlideOutRequested, m_elevatorSlideInRequested);
+        fullClimbCommand(m_fullClimbRequested, m_autoClimbRequested);
     }
     
     if (DriverStation.isAutonomous()) {
-         autoClimbCommand(m_autoClimbRequested);
+         autoClimbCommand(m_fullClimbRequested, m_autoClimbRequested);
     }
    }
    
-   private void fullClimbCommand(boolean fullClimbRequested) {
-
-   }
-
-   private void autoClimbCommand(boolean autoClimbRequested) {
-
-   }
-
-   private void elevatorSlideCommand(boolean elevatorSlideOutRequested, boolean elevatorSlideInRequested) {
-      if (elevatorSlideOutRequested) {
-         m_elevatorSlider.set(1);
-         elevatorSlideOutRequested = false;
-      } else if (elevatorSlideInRequested) {
-         m_elevatorSlider.set(0);
-         elevatorSlideInRequested = false;
+   private void fullClimbCommand(boolean fullClimbRequested, boolean m_autoClimbRequested) {
+      if (fullClimbRequested) {
+      climbPartOne()
+      .andThen(
+         climbPartTwo()
+         ).andThen(
+         climbPartThree()
+      ).andThen(
+         climbPartOne()
+      ).andThen(
+         climbPartTwo()
+      ).andThen(
+         climbPartOne()
+      ).andThen(
+         climbPartFour(fullClimbRequested, m_autoClimbRequested)
+      );
+      } else {
+         m_climber.set(0);
       }
    }
 
-public void updateWithControls(boolean fullClimbRequested, boolean elevatorSlideOutRequested, boolean elevatorSlideInRequested) {
+   private void autoClimbCommand(boolean m_autoClimbRequested, boolean fullClimbRequested) {
+      if (m_autoClimbRequested) {
+         climbPartOne()
+         .andThen(climbPartFour(fullClimbRequested, m_autoClimbRequested));
+      }
+   }
+
+   public Command climbPartOne() {
+      return new Command() {
+         
+         @Override
+         public boolean isFinished() {
+            return bigArmsAreUp();
+         }
+
+         @Override
+         public void initialize() {}
+
+         @Override
+         public void execute() {
+            m_climber.set(0.25);
+         }
+
+         @Override
+         public void end(boolean interrupted) {
+            m_climber.set(0);
+         }
+      };
+   }
+
+   private Command climbPartThree() {
+      return new RunCommand(
+         () -> m_elevatorSlider.set(-0.25))
+         .withTimeout(2);
+   }
+
+   private Command climbPartTwo() {
+      return new Command() {
+         
+         @Override
+         public boolean isFinished() {
+            return rungTwoReached();
+         }
+
+         @Override
+         public void initialize() {}
+
+         @Override
+         public void execute() {
+            m_climber.set(-0.25);
+         }
+
+         @Override
+         public void end(boolean interrupted) {
+            m_climber.set(0);
+         }
+      };
+   }
+
+   private Command climbPartFour(boolean fullClimbRequested, boolean m_autoClimbRequested) {
+      return new Command() {
+         
+         @Override
+         public boolean isFinished() {
+            return bigArmsAreUp();
+         }
+
+         @Override
+         public void initialize() {}
+
+         @Override
+         public void execute() {
+            m_climber.set(0.25);
+         }
+
+         @Override
+         public void end(boolean interrupted) {
+            m_climber.set(0);
+            m_fullClimbRequested = false;
+         }
+      };
+   }
+
+   public void elevatorSlideCommand(boolean elevatorSlideOutRequested, boolean elevatorSlideInRequested) {
+      if (elevatorSlideOutRequested && m_elevatorSliderBackLimit.get()) {
+         m_elevatorSlider.set(0.75);
+
+      } else if (elevatorSlideInRequested && m_elevatorSliderFrontLimit.get()) {
+         m_elevatorSlider.set(-0.75);
+      } else {
+         m_elevatorSlider.set(0);
+      }
+   }
+
+   public void elevatorManualControls(boolean elevatorUp, boolean elevatorDown) {
+      if (elevatorUp) {
+         m_climber.set(0.25);
+      } else if (elevatorDown) {
+         m_climber.set(-0.25);
+      } else if (!m_fullClimbRequested && !m_autoClimbRequested) {
+         m_climber.set(0);
+      }
+   }
+
+public void updateWithControls(boolean fullClimbRequested) {
    m_fullClimbRequested = fullClimbRequested;
-   m_elevatorSlideOutRequested = elevatorSlideOutRequested;
-   m_elevatorSlideInRequested = elevatorSlideInRequested;
+}
+
+public boolean bigArmsAreUp() {
+   return !m_elevatorTopLimit.get();
+}
+
+public boolean rungTwoReached() {
+   return !m_elevatorBottomLimit.get();
 }
 }

@@ -15,10 +15,13 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.subsystems.Coms;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -31,14 +34,15 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkFlex;
+import frc.robot.subsystems.LimelightHelpers;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -55,15 +59,19 @@ public class RobotContainer {
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
+  public Trajectory currentTrajectory;
+
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-    configureDefaultCommands();
 
     // Configure default commands
+    m_elevator.setDefaultCommand(new ElevatorCommand(m_elevator, m_driverController));
+    m_intake.setDefaultCommand(new IntakeCommand(m_intake, m_driverController));
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
@@ -85,35 +93,238 @@ public class RobotContainer {
    * passing it to a
    * {@link JoystickButton}.
    */
-  private void configureButtonBindings() {
-    new JoystickButton(m_driverController, Button.kR1.value)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.setX(),
-            m_robotDrive));
-
-    new JoystickButton(m_driverController, XboxController.Button.kStart.value)
-        .onTrue(new InstantCommand(
-            () -> m_robotDrive.zeroHeading(),
-            m_robotDrive));
+   private void configureButtonBindings() {
+    
   }
 
-  private Command getmoveForward(){
+private Command getMoveForward() {
 
-TrajectoryConfig config = new TrajectoryConfig(
+  try{
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Move Forward");
+
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }
+}
+
+private Command getShootPosition() {
+  if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+    LimelightHelpers.SetFiducialIDFiltersOverride("", new int[]{25});
+  } else if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+    LimelightHelpers.SetFiducialIDFiltersOverride("", new int[]{9});
+  }
+
+  if (LimelightHelpers.getTV("limelight")) {
+    return new RunCommand(
+      () -> m_robotDrive.drive(
+        LimelightHelpers.getTY("limelight") * -0.1,
+        LimelightHelpers.getTX("limelight") * -0.5,
+        LimelightHelpers.getTX("limelight") * -0.5,
+        false),
+        m_robotDrive
+    )
+    .withTimeout(3)
+    .andThen(
+      Commands.runOnce(
+        () -> m_robotDrive.drive(0, 0, 0, false)
+      )
+    );
+  } else {
+    return Commands.none();
+  }
+}
+
+private Command getShoot() {
+  return new RunCommand(
+    () -> m_intake.shoot(0.8, m_intake.m_systemTimer)
+  ).withTimeout(7);
+}
+
+private Command getDriveToLadder() {
+
+  try{
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Drive to Ladder");
+
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }
+}
+
+private Command getClimb() {
+  return new RunCommand(
+    () -> m_elevator.climbPartOne()
+  );
+}
+
+private Command getMoveToFixedShootPoint() {
+  try{
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Move Back");
+
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }
+}
+
+private Command getPutArmDown() {
+  return new RunCommand(
+    () -> m_intake.intakeArmDown(0.2)
+  ).withTimeout(3);
+}
+
+private Command getMoveToNeutral() {
+  try{
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Move to Neutral");
+
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }
+}
+
+private Command getBackTrajectory() {
+  try{
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Move Back");
+
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }
+}
+
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    // Create a voltage constraint to ensure we don't accelerate too fast
+    /**TrajectoryConfig config = new TrajectoryConfig(
       AutoConstants.kMaxSpeedMetersPerSecond,
       AutoConstants.kMaxAccelerationMetersPerSecondSquared
     )
     .setKinematics(DriveConstants.kDriveKinematics)
     .setStartVelocity(0)
-    .setEndVelocity(0);
+    .setEndVelocity(0);*/
 
-    Trajectory moveForwardTrajectory = TrajectoryGenerator.generateTrajectory(
+    //actual auto command/diff autos based on selection
+     String[] choices = Coms.getAutoChoices();
+    
+    Command autoCommand = Commands.none();
+
+    if (choices[0].matches("AUTO 1") ){
+        autoCommand = getMoveForward();
+
+      } else if (choices[0].matches("AUTO 2")){
+        autoCommand = getMoveForward()
+        .andThen(getShootPosition())
+        .andThen(getShoot())
+        .andThen(getDriveToLadder())
+        .andThen(getClimb());
+
+      } else if (choices[0].matches("AUTO 3")){
+        autoCommand = getMoveToFixedShootPoint()
+        .andThen(getShoot())
+        .andThen(Commands.runOnce(
+         () -> m_intake.stopShooter(true))
+        );
+        
+      } else if (choices[0].matches("AUTO 4")) {
+        autoCommand = getPutArmDown()
+        .andThen(Commands.runOnce(
+          () -> m_intake.intakeStop(true)))
+        .andThen(getMoveToNeutral());
+      
+      } else if (choices[0].matches("AUTO 5")) {
+        autoCommand = getBackTrajectory()
+        .andThen(getPutArmDown())
+        .andThen(Commands.runOnce(
+          () -> m_intake.intakeStop(true)))
+        .andThen(getShoot())
+        .andThen(Commands.runOnce(
+          () -> m_intake.stopShooter(true)));
+
+      } else if (choices[0].matches("MODULAR TEST")) {
+        autoCommand = getPutArmDown()
+        .andThen(Commands.runOnce(
+          () -> m_intake.intakeStop(true)));
+
+      } else {
+        return Commands.none();
+    }
+
+        return autoCommand;
+  }
+
+  public ElevatorSubsystem getElevator() {
+    return m_elevator;
+  }
+
+  public IntakeSubsystem getIntake() {
+    return m_intake;
+}
+
+/**private Command generateTrajectoryCommand(Pose2d start, Pose2d end, List<Translation2d> waypoints, TrajectoryConfig config) {
+    currentTrajectory = TrajectoryGenerator.generateTrajectory(
+        start,
+        waypoints,
+        end,
+        config
+    );
+
+    var thetaController = new ProfiledPIDController(
+        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    Command swerveCommand = new SwerveControllerCommand(
+        currentTrajectory,
+        m_robotDrive::getPose,
+        DriveConstants.kDriveKinematics,
+        new PIDController(AutoConstants.kPXController, 0, 0),
+        new PIDController(AutoConstants.kPYController, 0, 0),
+        thetaController,
+        m_robotDrive::setModuleStates,
+        m_robotDrive) {
+            
+        @Override
+        public void execute() {
+            super.execute();
+        }
+    };
+
+    return swerveCommand
+    .andThen(
+      Commands.runOnce(
+        () -> m_robotDrive.drive(0, 0, 0, false)
+      )
+    );
+  }
+
+  private Command regenerateTrajectoryCommand(TrajectoryConfig config, double xEnd, double yEnd, double rotEnd) {
+    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
         // Start at the origin facing the +X direction
         new Pose2d(0, 0, new Rotation2d(0)),
         // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(0, 0), new Translation2d(0, 0)),
+        List.of(),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(0, 3, new Rotation2d(0)),
+        new Pose2d(xEnd, yEnd, new Rotation2d(rotEnd)),
         config);
 
     var thetaController = new ProfiledPIDController(
@@ -121,7 +332,7 @@ TrajectoryConfig config = new TrajectoryConfig(
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        moveForwardTrajectory,
+        exampleTrajectory,
         m_robotDrive::getPose, // Functional interface to feed supplier
         DriveConstants.kDriveKinematics,
 
@@ -133,45 +344,9 @@ TrajectoryConfig config = new TrajectoryConfig(
         m_robotDrive);
 
     // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(moveForwardTrajectory.getInitialPose());
+    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // Create a voltage constraint to ensure we don't accelerate too fast
-    TrajectoryConfig config = new TrajectoryConfig(
-      AutoConstants.kMaxSpeedMetersPerSecond,
-      AutoConstants.kMaxAccelerationMetersPerSecondSquared
-    )
-    .setKinematics(DriveConstants.kDriveKinematics)
-    .setStartVelocity(0)
-    .setEndVelocity(0);
-
-    //actual auto command/diff autos based on selection
-     String[] choices = Coms.getAutoChoices();
-    
-    Command autoCommand = Commands.none();
-
-    if (choices[0] == "AUTO 1"){
-        autoCommand = getmoveForward();
-      } else {
-        return Commands.none();
-    }
-
-        return autoCommand;
-  }
-
-  
-  private void configureDefaultCommands() {
-
-    m_intake.setDefaultCommand(new IntakeCommand(m_intake, m_driverController));
-    m_elevator.setDefaultCommand(new ElevatorCommand(m_elevator, m_driverController));
-  } 
+  }*/
 }

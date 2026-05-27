@@ -4,17 +4,16 @@
 
 package frc.robot;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.commands.FollowPathCommand;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Coms;
-
+import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.XboxController;
-
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -27,9 +26,13 @@ public class Robot extends TimedRobot {
   private final Timer m_systemTimer = new Timer();
 
   private RobotContainer m_robotContainer;
-  private XboxController m_controller = new XboxController(Constants.OIConstants.kDriverControllerPort);
-  private SparkMax m_climber = new SparkMax(Constants.DriveConstants.kClimberCanId, MotorType.kBrushless);
 
+  private DriveSubsystem m_robotDrive;
+
+  private final Pigeon2 m_gyro = new Pigeon2(Constants.DriveConstants.kGyroID);
+
+  private void onInits() {
+  }
 
 
   /**
@@ -42,6 +45,9 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    
+    CameraServer.startAutomaticCapture();
+    FollowPathCommand.warmupCommand().schedule();
   }
 
   /**
@@ -70,9 +76,10 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_systemTimer.reset();
-    m_systemTimer.start();
-    
+    onInits();
+    m_gyro.reset();
+
+    m_robotContainer.getAutonomousCommand();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     /*
@@ -84,7 +91,7 @@ public class Robot extends TimedRobot {
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
-      CommandScheduler.getInstance().schedule(m_autonomousCommand);
+      m_autonomousCommand.schedule();
     }
   }
 
@@ -100,18 +107,14 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+     m_gyro.reset();
+
     }
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
-    if (m_controller.getYButton()) {
-      m_climber.set(0.1);
-    } else if (m_controller.getXButton()) {
-      m_climber.set(-0.1);
-    }
   }
 
   @Override
