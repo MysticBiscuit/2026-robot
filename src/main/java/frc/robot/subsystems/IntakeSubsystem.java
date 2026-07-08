@@ -95,10 +95,12 @@ public class IntakeSubsystem extends SubsystemBase{
         }
     }*/
 
-    public void intakeTime(boolean suckIt) {
+    public void intakeTime(boolean suckIt, boolean outtake) {
         if(suckIt) {
             m_intakeMotor.set(-1);
-        }else if (DriverStation.isTeleop()) {
+        } else if(outtake) {
+            m_intakeMotor.set(1);
+        } else if (DriverStation.isTeleop()) {
             m_intakeMotor.set(0);
         }
     }
