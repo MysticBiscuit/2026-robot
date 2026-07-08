@@ -96,13 +96,13 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auto Choices", m_autoChooser);
 
-    NamedCommands.registerCommand("TestAuto", new TestAutoCommand(m_elevator, m_intake, m_driverController));
+    NamedCommands.registerCommand("TestAutoCommand", new TestAutoCommand(m_elevator, m_intake, m_driverController)); }
   
   public Command getAutonomousCommand() {
     Command m_autoCommand = Commands.none();
-    
+
     if(m_autoChooser.getSelected() == "TestAuto") {
-      m_autoCommand = new PathPlannerAuto("TestAuto");
+      m_autoCommand = new PathPlannerAuto("TestAutoCommand");
     }
 
     return m_autoCommand;
