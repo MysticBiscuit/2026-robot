@@ -14,6 +14,8 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -22,7 +24,8 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.subsystems.Coms;
+import frc.robot.commands.TestAutoCommand;
+//import frc.robot.subsystems.Coms;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -35,8 +38,12 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ElevatorCommand;
@@ -61,6 +68,8 @@ public class RobotContainer {
 
   public Trajectory currentTrajectory;
 
+      private static final SendableChooser<String> m_autoChooser = new SendableChooser<>();
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -82,6 +91,21 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true),
             m_robotDrive));
+
+    m_autoChooser.setDefaultOption("TestAuto", "TestAuto");
+
+    SmartDashboard.putData("Auto Choices", m_autoChooser);
+
+    NamedCommands.registerCommand("TestAuto", new TestAutoCommand(m_elevator, m_intake, m_driverController));
+  
+  public Command getAutonomousCommand() {
+    Command m_autoCommand = Commands.none();
+    
+    if(m_autoChooser.getSelected() == "TestAuto") {
+      m_autoCommand = new PathPlannerAuto("TestAuto");
+    }
+
+    return m_autoCommand;
   }
 
   /**
@@ -96,8 +120,8 @@ public class RobotContainer {
    private void configureButtonBindings() {
     
   }
-
-private Command getMoveForward() {
+  
+ /** private Command getMoveForward() {
 
   try{
         // Load the path you want to follow using its name in the GUI
@@ -214,7 +238,7 @@ private Command getBackTrajectory() {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+  // public Command getAutonomousCommand() {
     // Create a voltage constraint to ensure we don't accelerate too fast
     /**TrajectoryConfig config = new TrajectoryConfig(
       AutoConstants.kMaxSpeedMetersPerSecond,
@@ -225,7 +249,7 @@ private Command getBackTrajectory() {
     .setEndVelocity(0);*/
 
     //actual auto command/diff autos based on selection
-     String[] choices = Coms.getAutoChoices();
+    /** String[] choices = Coms.getAutoChoices();
     
     Command autoCommand = Commands.none();
 
@@ -279,7 +303,7 @@ private Command getBackTrajectory() {
 
   public IntakeSubsystem getIntake() {
     return m_intake;
-}
+} */
 
 /**private Command generateTrajectoryCommand(Pose2d start, Pose2d end, List<Translation2d> waypoints, TrajectoryConfig config) {
     currentTrajectory = TrajectoryGenerator.generateTrajectory(
