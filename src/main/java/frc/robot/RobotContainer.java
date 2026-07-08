@@ -102,7 +102,7 @@ public class RobotContainer {
     Command m_autoCommand = Commands.none();
 
     if(m_autoChooser.getSelected() == "TestAuto") {
-      m_autoCommand = new PathPlannerAuto("TestAutoCommand");
+      m_autoCommand = new PathPlannerAuto("TestAuto");
     }
 
     return m_autoCommand;
